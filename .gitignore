@@ -1,0 +1,25 @@
+# .NET
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.cache
+*.nupkg
+appsettings.Development.json
+*.db
+*.db-shm
+*.db-wal
+
+# Angular
+Frontend/RGBAngular/dist/
+Frontend/RGBAngular/node_modules/
+Frontend/RGBAngular/.angular/
+Frontend/RGBAngular/.vscode/
+Frontend/RGBAngular/coverage/
+
+# General
+.DS_Store
+*.log
+*.tmp
+*.bak
