@@ -12,12 +12,7 @@ namespace RedGreenBlue.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Eindeutiger Index für Zellenpositionen pro Team
-            modelBuilder.Entity<Cell>()
-                .HasIndex(c => new { c.TeamColor, c.Position })
-                .IsUnique();
-
-            // Initialdaten für 3 Teams mit je 9 Zellen
+            // Placeholder for 3x3
             int cellId = 1;
             foreach (TeamColor team in Enum.GetValues(typeof(TeamColor)))
             {
