@@ -1,28 +1,30 @@
-<div class="container min-vh-100 d-flex align-items-center">
-  <div
-    class="card shadow-lg mx-auto"
-    style="width: 400px; background-color: #f8f9fa"
-  >
-    <div class="card-header bg-primary text-white">
-      <h3 class="mb-0">Login</h3>
+<div
+  class="container min-vh-100 d-flex align-items-center justify-content-center"
+>
+  <div class="auth-card mx-auto">
+    <div class="card-header text-center">
+      <h3 class="card-title">Anmeldung</h3>
     </div>
     <div class="card-body">
       <form>
         <div class="mb-3">
-          <label class="form-label">Username</label>
-          <input type="text" class="form-control" placeholder="Benutzername" />
+          <label class="form-label">Benutzername</label>
+          <input type="text" class="form-control" placeholder="" />
         </div>
-        <div class="mb-3">
-          <label class="form-label">Password</label>
-          <input type="password" class="form-control" placeholder="Passwort" />
+        <div class="mb-4">
+          <label class="form-label">Passwort</label>
+          <input type="password" class="form-control" placeholder="" />
         </div>
-        <button type="submit" class="btn btn-primary w-100">Anmelden</button>
+        <button type="submit" class="btn btn-auth w-100 mb-3">Anmelden</button>
+
+        <span class="divider"></span>
+
+        <div class="text-center mt-3">
+          <a routerLink="/register" class="link-secondary"
+            >Neuer Benutzer? Registrieren</a
+          >
+        </div>
       </form>
-      <div class="mt-3 text-center">
-        <a routerLink="/register" class="text-decoration-none"
-          >Neuer Benutzer? Registrieren</a
-        >
-      </div>
     </div>
   </div>
 </div>
