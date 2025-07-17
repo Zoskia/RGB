@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
-import { HexGridComponent } from './features/hexgrid/hexgrid.component';
+import { HexGridComponent } from './features/hex-grid/hex-grid.component';
 
 export const routes: Routes = [
   {
@@ -15,7 +15,7 @@ export const routes: Routes = [
     title: 'Register',
   },
   {
-    path: 'hexgrid',
+    path: 'hex-grid',
     component: HexGridComponent,
     title: 'HexGrid',
   },

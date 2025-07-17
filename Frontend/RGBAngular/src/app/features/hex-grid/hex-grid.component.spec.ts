@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HexgridComponent } from './hexgrid.component';
+import { HexGridComponent } from './hex-grid.component';
 
-describe('HexgridComponent', () => {
-  let component: HexgridComponent;
-  let fixture: ComponentFixture<HexgridComponent>;
+describe('HexGridComponent', () => {
+  let component: HexGridComponent;
+  let fixture: ComponentFixture<HexGridComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HexgridComponent]
+      imports: [HexGridComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(HexgridComponent);
+    fixture = TestBed.createComponent(HexGridComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
