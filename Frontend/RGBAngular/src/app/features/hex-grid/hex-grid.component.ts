@@ -27,7 +27,7 @@ export class HexGridComponent {
     // See: https://abbekeultjes.nl/honeycomb/guide/creating-hexes.html
     // --------------------------------------------------
     const Hex = defineHex({
-      dimensions: 30,
+      dimensions: 50,
       origin: 'topLeft',
     });
 
