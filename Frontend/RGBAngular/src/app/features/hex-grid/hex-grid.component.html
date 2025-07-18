@@ -1,11 +1,10 @@
-<!-- my-hexagon.component.html -->
-<div class="hexagon-wrapper">
-  <svg viewBox="0 0 200 200" class="hexagon-svg">
+<div class="hex-container">
+  <svg width="400" height="400">
     <polygon
-      [attr.points]="hexagonPoints"
-      stroke="black"
-      fill="white"
-      stroke-width="1"
+      *ngFor="let hex of hexes"
+      [attr.points]="getPolygonPoints(hex)"
+      (click)="setCellColor(hex)"
+      class="hex-polygon"
     />
   </svg>
 </div>
