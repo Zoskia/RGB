@@ -1,5 +1,6 @@
 <div class="hex-container">
   <svg width="400" height="400">
+    <!-- Render each hex as an SVG polygon -->
     <polygon
       *ngFor="let hex of hexes"
       [attr.points]="getPolygonPoints(hex)"
