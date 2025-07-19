@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Isopoh.Cryptography.Argon2" Version="2.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -23,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Frontend/" />
+    <ProjectReference Include="..\..\..\Isopoh.Cryptography.Argon2\Isopoh.Cryptography.SecureArray\Isopoh.Cryptography.SecureArray.csproj" />
   </ItemGroup>
 
 </Project>
