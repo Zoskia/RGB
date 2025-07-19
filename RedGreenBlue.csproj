@@ -24,8 +24,6 @@
 
   <ItemGroup>
     <Folder Include="Frontend/" />
-    <Folder Include="Repositories/" />
-    <Folder Include="Services/" />
   </ItemGroup>
 
 </Project>
