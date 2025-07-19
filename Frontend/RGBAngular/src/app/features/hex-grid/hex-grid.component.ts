@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { defineHex } from 'honeycomb-grid';
+import { Component, HostListener } from '@angular/core';
 import { NgFor } from '@angular/common';
+import { defineHex, Grid, rectangle } from 'honeycomb-grid';
 
 @Component({
   selector: 'app-hex-grid',
@@ -10,93 +10,76 @@ import { NgFor } from '@angular/common';
   styleUrls: ['./hex-grid.component.css'],
 })
 export class HexGridComponent {
-  /**
-   * Array of all hexagons to render.
-   * Each entry has a `corners` array with 6 absolute pixel coordinates.
-   */
+  /** Stores each hex’s pixel corners for rendering */
   hexes: Array<{ corners: { x: number; y: number }[] }> = [];
 
+  /** Current pan offsets applied to the SVG group */
+  offsetX = 0;
+  offsetY = 0;
+  private lastX = 0;
+  private lastY = 0;
+  private dragging = false;
+
   constructor() {
-    // --------------------------------------------------
-    // 1) Create a Hex factory with `defineHex`
-    //
-    //    • dimensions: radius in pixels (30px here)
-    //    • origin: 'topLeft' means each Hex().corners is relative
-    //      to the top-left corner of its bounding box
-    //
-    // See: https://abbekeultjes.nl/honeycomb/guide/creating-hexes.html
-    // --------------------------------------------------
-    const Hex = defineHex({
-      dimensions: 50,
-      origin: 'topLeft',
+    // 1. Create a hex “class” with 50px radius, pixel origin at top-left
+    const Hex = defineHex({ dimensions: 50, origin: 'topLeft' });
+
+    // 2. Build a rectangular grid (100×100) using the built-in rectangle traverser
+    //    → rectangle({width, height}) defines the grid’s layout in hex coordinates :contentReference[oaicite:1]{index=1}
+    const grid = new Grid(Hex, rectangle({ width: 100, height: 100 }));
+
+    // 3. Compute min/max pixel extents of all hex corners
+    let minX = Infinity,
+      minY = Infinity;
+    let maxX = -Infinity,
+      maxY = -Infinity;
+
+    grid.forEach((hex) => {
+      // Honeycomb’s grid.forEach iterates each hex in the grid :contentReference[oaicite:2]{index=2}
+      this.hexes.push({ corners: hex.corners });
+
+      // hex.corners contains 6 pixel points for SVG rendering
+      hex.corners.forEach(({ x, y }) => {
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      });
     });
 
-    // --------------------------------------------------
-    // 2) Measure one sample hex to get its true pixel width/height
-    // --------------------------------------------------
-    const sample = new Hex();
-    const xs = sample.corners.map((pt) => pt.x);
-    const ys = sample.corners.map((pt) => pt.y);
-
-    // boxWidth/boxHeight = bounding‐box of one hex in pixels
-    const boxWidth = Math.max(...xs) - Math.min(...xs);
-    const boxHeight = Math.max(...ys) - Math.min(...ys);
-
-    // In a “pointy-top” layout each row overlaps by 1/4 of boxHeight
-    const rowHeight = boxHeight * 0.75;
-
-    // --------------------------------------------------
-    // 3) Grid dimensions
-    // --------------------------------------------------
-    const ROWS = 5; // total number of rows
-    const MAX_COLS = 5; // number of cells in a “full” row
-
-    // --------------------------------------------------
-    // 4) Build each row manually:
-    //
-    //    • Rows 1,3,5 (r=0,2,4) get 4 cells
-    //    • Rows 2,4   (r=1,3)   get 5 cells
-    //    • 4-cell rows are offset horizontally by
-    //      ( (MAX_COLS–4)/2 * boxWidth ) to center them
-    // --------------------------------------------------
-    for (let r = 0; r < ROWS; r++) {
-      // determine if this is a 1-based odd row (1st, 3rd, 5th)
-      const isOdd1Based = (r + 1) % 2 === 1;
-      const cellsInRow = isOdd1Based ? 4 : 5;
-
-      // horizontal pixel offset to center 4-cell rows under 5 columns
-      const groupOffset = ((MAX_COLS - cellsInRow) / 2) * boxWidth;
-
-      for (let i = 0; i < cellsInRow; i++) {
-        // compute center position of this hex in pixels
-        const cx = groupOffset + i * boxWidth;
-        const cy = r * rowHeight;
-
-        // get corners relative to bounding‐box top-left
-        const relCorners = new Hex().corners;
-
-        // translate to absolute pixel positions
-        const absCorners = relCorners.map((pt) => ({
-          x: pt.x + cx,
-          y: pt.y + cy,
-        }));
-
-        this.hexes.push({ corners: absCorners });
-      }
-    }
+    // 4. Center grid in viewport: compute pixel center of grid and viewport.
+    const gridCenterX = (minX + maxX) / 2;
+    const gridCenterY = (minY + maxY) / 2;
+    const viewCenterX = 800 / 2;
+    const viewCenterY = 600 / 2;
+    this.offsetX = viewCenterX - gridCenterX;
+    this.offsetY = viewCenterY - gridCenterY;
   }
 
-  /**
-   * Click handler for a hex cell
-   */
-  setCellColor(hex: any): void {
-    console.log('Hex clicked:', hex);
-  }
-
-  /**
-   * Build the SVG <polygon> points attribute from hex corners
-   */
+  /** Return SVG‑ready "points" string from pixel corners */
   getPolygonPoints(hex: { corners: { x: number; y: number }[] }): string {
-    return hex.corners.map((pt) => `${pt.x},${pt.y}`).join(' ');
+    return hex.corners.map((p) => `${p.x},${p.y}`).join(' ');
+  }
+
+  // --- Mouse events to allow drag‑to‑pan interaction ---
+  @HostListener('mousedown', ['$event'])
+  onMouseDown(e: MouseEvent) {
+    this.dragging = true;
+    this.lastX = e.clientX;
+    this.lastY = e.clientY;
+  }
+
+  @HostListener('document:mouseup')
+  onMouseUp() {
+    this.dragging = false;
+  }
+
+  @HostListener('document:mousemove', ['$event'])
+  onMouseMove(e: MouseEvent) {
+    if (!this.dragging) return;
+    this.offsetX += e.clientX - this.lastX;
+    this.offsetY += e.clientY - this.lastY;
+    this.lastX = e.clientX;
+    this.lastY = e.clientY;
   }
 }

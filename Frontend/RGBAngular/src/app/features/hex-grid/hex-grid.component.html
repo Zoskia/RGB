@@ -1,11 +1,13 @@
-<div class="hex-container">
-  <svg width="500" height="500">
-    <!-- Render each hex as an SVG polygon -->
-    <polygon
-      *ngFor="let hex of hexes"
-      [attr.points]="getPolygonPoints(hex)"
-      (click)="setCellColor(hex)"
-      class="hex-polygon"
-    />
-  </svg>
+<div class="container">
+  <div class="viewport">
+    <svg width="800" height="600">
+      <g [attr.transform]="'translate(' + offsetX + ',' + offsetY + ')'">
+        <polygon
+          *ngFor="let hex of hexes"
+          [attr.points]="getPolygonPoints(hex)"
+          class="hex-polygon"
+        />
+      </g>
+    </svg>
+  </div>
 </div>
