@@ -1,22 +1,37 @@
 using System;
+using Microsoft.EntityFrameworkCore;
+using RedGreenBlue.Data;
 using RedGreenBlue.Models;
 
 namespace RedGreenBlue.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    public Task AddNewUserAsync(User user)
+    private readonly ApplicationDbContext _context;
+
+    public UserRepository(ApplicationDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
 
-    public Task<User?> GetByUsernameAsync(string username)
+    public async Task<User?> AddNewUserAsync(User user)
     {
-        throw new NotImplementedException();
+        if (await UsernameAvailableAsync(user.Username))
+        {
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+            return user;
+        }
+        return null;
     }
 
-    public Task<bool> UsernameAvailableAsync(string username)
+    public async Task<User?> GetByUsernameAsync(string username)
     {
-        throw new NotImplementedException();
+        return await _context.Users.FirstOrDefaultAsync(user => user.Username == username);
+    }
+
+    public async Task<bool> UsernameAvailableAsync(string username)
+    {
+        return !await _context.Users.AnyAsync(user => user.Username == username);
     }
 }
