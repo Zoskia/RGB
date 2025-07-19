@@ -1,17 +1,29 @@
 using System;
 using RedGreenBlue.Models;
+using RedGreenBlue.Repositories;
+using RedGreenBlue.Services.Interfaces;
 
 namespace RedGreenBlue.Services;
 
 public class AuthService : IAuthService
 {
-    public Task<User?> LoginAsync(string username, string password)
+    private readonly IUserRepository _userRepository;
+    private readonly IPasswordHasher _passwordHasher;
+
+    public AuthService(IUserRepository userRepository, IPasswordHasher passwordHasher)
+    {
+        _userRepository = userRepository;
+        _passwordHasher = passwordHasher;
+    }
+
+    public Task<User?> LoginAsync(User user)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> RegisterAsync(string username, string password)
+    public async Task<User?> RegisterAsync(User user)
     {
-        throw new NotImplementedException();
+        user.Password = _passwordHasher.HashPassword(user.Password);
+        return await _userRepository.AddNewUserAsync(user);
     }
 }
