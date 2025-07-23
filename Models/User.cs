@@ -15,6 +15,10 @@ public class User
 
     [Required]
     public string Password { get; set; } = null!;
+
+    [Required]
+    public string Salt { get; set; } = null!;
+
     [Required]
     public TeamColor Team { get; set; }
 

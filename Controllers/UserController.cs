@@ -17,9 +17,11 @@ namespace RedGreenBlue.Controllers
     public class UserController : ControllerBase
     {
         private readonly IAuthService _authService;
-        public UserController(IAuthService authService)
+        private readonly PasswordHasher _passwordHasher;
+        public UserController(IAuthService authService, PasswordHasher passwordHasher)
         {
             _authService = authService;
+            _passwordHasher = passwordHasher;
         }
 
         // GET: api/User
@@ -82,7 +84,7 @@ namespace RedGreenBlue.Controllers
             var user = new User
             {
                 Username = dto.Username,
-                Password = dto.Password, // wird gleich noch gehashed
+                Password = _passwordHasher.HashPassword(dto.Password),
                 Team = dto.Team
             };
 
