@@ -12,7 +12,8 @@ namespace RedGreenBlue.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            modelBuilder.Entity<Cell>()
+        .HasKey(c => new { c.Q, c.R });
         }
     }
 }
