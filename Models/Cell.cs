@@ -10,9 +10,10 @@ public class Cell
     [RegularExpression("^#(?:[0-9a-fA-F]{3}){1,2}$", ErrorMessage = "Invalid HEX color")]
     public string HexColor { get; set; } = "#CCCCCC";
 
+    public int Q { get; set; }
+    public int R { get; set; }
+
     [Required]
     public TeamColor TeamColor { get; set; }
 
-    [Required]
-    public int Position { get; set; }
 }

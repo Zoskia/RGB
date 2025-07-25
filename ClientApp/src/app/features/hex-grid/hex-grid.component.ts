@@ -10,10 +10,10 @@ import { defineHex, Grid, rectangle } from 'honeycomb-grid';
   styleUrls: ['./hex-grid.component.css'],
 })
 export class HexGridComponent {
-  /** Stores each hex’s pixel corners for rendering */
+  // Stores each hex’s pixel corners for rendering
   hexes: Array<{ corners: { x: number; y: number }[] }> = [];
 
-  /** Current pan offsets applied to the SVG group */
+  //Current pan offsets applied to the SVG group
   offsetX = 0;
   offsetY = 0;
   private lastX = 0;
@@ -47,7 +47,7 @@ export class HexGridComponent {
       });
     });
 
-    // 4. Center grid in viewport: compute pixel center of grid and viewport.
+    // Center grid in viewport
     const gridCenterX = (minX + maxX) / 2;
     const gridCenterY = (minY + maxY) / 2;
     const viewCenterX = 800 / 2;
