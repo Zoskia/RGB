@@ -13,7 +13,7 @@ export class HexGridComponent {
   // Stores each hex’s pixel corners for rendering
   hexes: Array<{ corners: { x: number; y: number }[] }> = [];
 
-  //Current pan offsets applied to the SVG group
+  // Current pan offsets applied to the SVG group
   offsetX = 0;
   offsetY = 0;
   private lastX = 0;
@@ -21,21 +21,21 @@ export class HexGridComponent {
   private dragging = false;
 
   constructor() {
-    // 1. Create a hex “class” with 50px radius, pixel origin at top-left
+    // Create a hex “class” with 50px radius, pixel origin at top-left
     const Hex = defineHex({ dimensions: 50, origin: 'topLeft' });
 
-    // 2. Build a rectangular grid (100×100) using the built-in rectangle traverser
-    //    → rectangle({width, height}) defines the grid’s layout in hex coordinates :contentReference[oaicite:1]{index=1}
+    // Build a rectangular grid (100×100) using the built-in rectangle traverser
+    // rectangle({width, height}) defines the grid’s layout in hex coordinates
     const grid = new Grid(Hex, rectangle({ width: 100, height: 100 }));
 
-    // 3. Compute min/max pixel extents of all hex corners
+    // Compute min/max pixel extents of all hex corners
     let minX = Infinity,
       minY = Infinity;
     let maxX = -Infinity,
       maxY = -Infinity;
 
     grid.forEach((hex) => {
-      // Honeycomb’s grid.forEach iterates each hex in the grid :contentReference[oaicite:2]{index=2}
+      // Honeycomb’s grid.forEach iterates each hex in the grid
       this.hexes.push({ corners: hex.corners });
 
       // hex.corners contains 6 pixel points for SVG rendering
@@ -56,12 +56,12 @@ export class HexGridComponent {
     this.offsetY = viewCenterY - gridCenterY;
   }
 
-  /** Return SVG‑ready "points" string from pixel corners */
+  // Return SVG‑ready "points" string from pixel corners
   getPolygonPoints(hex: { corners: { x: number; y: number }[] }): string {
     return hex.corners.map((p) => `${p.x},${p.y}`).join(' ');
   }
 
-  // --- Mouse events to allow drag‑to‑pan interaction ---
+  // Mouse events to allow drag‑to‑pan interaction
   @HostListener('mousedown', ['$event'])
   onMouseDown(e: MouseEvent) {
     this.dragging = true;
