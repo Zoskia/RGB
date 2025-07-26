@@ -43,11 +43,9 @@ export class RegisterComponent {
     this.registerService.registerUser(registerUserDto).subscribe({
       next: (response) => {
         console.log('Registration successful:', response);
-        // z.B. zu Login oder Home navigieren
       },
       error: (err) => {
         console.error('Registration failed:', err);
-        // ggf. eine Fehlermeldung im UI anzeigen
       },
     });
   }
