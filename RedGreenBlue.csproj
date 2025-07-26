@@ -29,6 +29,7 @@
     <Folder Include="ClientApp/src/app/enums/" />
     <Folder Include="ClientApp/src/app/models/" />
     <Folder Include="ClientApp/src/app/shared/" />
+    <Folder Include="ClientApp/src/enviroments/" />
   </ItemGroup>
 
 </Project>
