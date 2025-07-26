@@ -24,10 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Isopoh.Cryptography.Argon2\Isopoh.Cryptography.SecureArray\Isopoh.Cryptography.SecureArray.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="ClientApp/src/app/core/" />
     <Folder Include="ClientApp/src/app/dtos/" />
     <Folder Include="ClientApp/src/app/enums/" />
