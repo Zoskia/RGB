@@ -1,5 +1,5 @@
 export enum TeamColor {
-  Red = 'red',
-  Green = 'green',
-  Blue = 'blue',
+  Red = 0,
+  Green = 1,
+  Blue = 2,
 }

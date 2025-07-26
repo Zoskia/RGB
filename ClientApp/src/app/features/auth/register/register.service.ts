@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { RegisterUserDto } from '../../../dtos/register-user.dto';
 import { UserResponseDto } from '../../../dtos/user-response.dto';
-import { environment } from '../../../../enviroments/enviroments';
+import { environment } from '../../../../environments/environments';
 
 @Injectable({
   providedIn: 'root',
