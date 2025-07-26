@@ -37,7 +37,7 @@ export class RegisterComponent {
     const registerUserDto: RegisterUserDto = {
       username: formValue.username,
       password: formValue.password,
-      team: formValue.team,
+      team: Number(formValue.team),
     };
 
     this.registerService.registerUser(registerUserDto).subscribe({
