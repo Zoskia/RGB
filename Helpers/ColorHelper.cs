@@ -1,4 +1,4 @@
-namespace RedGreenBlue.Models;
+namespace RedGreenBlue.Helpers;
 
 public static class ColorHelper
 {
