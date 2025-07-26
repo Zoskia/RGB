@@ -3,36 +3,36 @@
 >
   <div class="auth-card mx-auto">
     <div class="card-header text-center">
-      <h3 class="card-title">Registrierung</h3>
+      <h3 class="card-title">Register</h3>
     </div>
     <div class="card-body">
-      <form>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
         <div class="mb-3">
-          <label class="form-label">Benutzername</label>
-          <input type="text" class="form-control" placeholder="" />
+          <label class="form-label">Username</label>
+          <input type="text" class="form-control" formControlName="username" />
         </div>
         <div class="mb-3">
-          <label class="form-label">Passwort</label>
-          <input type="password" class="form-control" placeholder="" />
+          <label class="form-label">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            formControlName="password"
+          />
         </div>
         <div class="mb-4">
-          <label class="form-label">Team auswählen</label>
-          <select class="form-select form-control">
-            <option value="red">Rot</option>
-            <option value="green">Grün</option>
-            <option value="blue">Blau</option>
+          <label class="form-label">Choose your color</label>
+          <select class="form-select" formControlName="team">
+            <option value="red">red</option>
+            <option value="green">green</option>
+            <option value="blue">blue</option>
           </select>
         </div>
-        <button type="submit" class="btn btn-auth w-100 mb-3">
-          Registrieren
-        </button>
+        <button type="submit" class="btn btn-auth w-100 mb-3">Send</button>
 
         <span class="divider"></span>
 
         <div class="text-center mt-3">
-          <a routerLink="/login" class="link-secondary"
-            >Bereits registriert? Anmelden</a
-          >
+          <a routerLink="/login" class="link-secondary">Login</a>
         </div>
       </form>
     </div>

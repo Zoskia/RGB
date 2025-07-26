@@ -1,4 +1,6 @@
+# --------------------------------------
 # .NET
+# --------------------------------------
 bin/
 obj/
 .vs/
@@ -6,20 +8,54 @@ obj/
 *.suo
 *.cache
 *.nupkg
-appsettings.Development.json
+*.snupkg
 *.db
 *.db-shm
 *.db-wal
+*.sqlite
+appsettings.Development.json
+appsettings.Local.json
 
-# Angular
-Frontend/RGBAngular/dist/
-Frontend/RGBAngular/node_modules/
-Frontend/RGBAngular/.angular/
-Frontend/RGBAngular/.vscode/
-Frontend/RGBAngular/coverage/
+# --------------------------------------
+# Angular (ClientApp)
+# --------------------------------------
+ClientApp/node_modules/
+ClientApp/dist/
+ClientApp/.angular/
+ClientApp/.vscode/
+ClientApp/coverage/
+ClientApp/.sass-cache/
+ClientApp/.eslintcache
 
+# Vite-specific
+ClientApp/.vite/
+ClientApp/.cache/
+ClientApp/**/vite/deps/
+
+# Angular build output (if not already in dist)
+ClientApp/build/
+
+# IDEs, tooling
+ClientApp/.idea/
+ClientApp/.webstorm/
+ClientApp/.angular/cache/
+
+# --------------------------------------
 # General
+# --------------------------------------
 .DS_Store
+Thumbs.db
 *.log
 *.tmp
 *.bak
+*.swp
+*.swo
+*.orig
+*.rej
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.env
+.env.local
+.env.*.local
