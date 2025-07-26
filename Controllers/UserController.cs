@@ -98,7 +98,7 @@ namespace RedGreenBlue.Controllers
                 Team = newUser.Team
             };
 
-            return Ok(response);
+            return StatusCode(201, response); // TODO: implement CreatedAtAction()
         }
 
 
