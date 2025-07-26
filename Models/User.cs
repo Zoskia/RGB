@@ -22,5 +22,5 @@ public class User
     [Required]
     public TeamColor Team { get; set; }
 
-    public bool isAdmin { get; set; } = false;
+    public bool IsAdmin { get; set; } = false;
 }
