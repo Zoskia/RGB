@@ -19,11 +19,9 @@ namespace RedGreenBlue.Controllers
     public class UserController : ControllerBase
     {
         private readonly IAuthService _authService;
-        private readonly IPasswordHasher _passwordHasher;
-        public UserController(IAuthService authService, IPasswordHasher passwordHasher)
+        public UserController(IAuthService authService)
         {
             _authService = authService;
-            _passwordHasher = passwordHasher;
         }
 
         // GET: api/User
