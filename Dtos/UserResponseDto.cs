@@ -8,5 +8,6 @@ namespace RedGreenBlue.Dtos.User
         public int Id { get; set; }
         public string Username { get; set; } = null!;
         public TeamColor Team { get; set; }
+        public bool isAdmin { get; set; }
     }
 }

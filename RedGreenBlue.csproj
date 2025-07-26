@@ -29,6 +29,9 @@
 
   <ItemGroup>
     <Folder Include="ClientApp/src/app/core/" />
+    <Folder Include="ClientApp/src/app/dtos/" />
+    <Folder Include="ClientApp/src/app/enums/" />
+    <Folder Include="ClientApp/src/app/models/" />
     <Folder Include="ClientApp/src/app/shared/" />
   </ItemGroup>
 

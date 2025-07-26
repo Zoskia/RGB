@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RedGreenBlue.Data;
 using RedGreenBlue.Dtos.User;
 using RedGreenBlue.Models;
 using RedGreenBlue.Services;
+using RedGreenBlue.Services.Interfaces;
 
 namespace RedGreenBlue.Controllers
 {
@@ -17,8 +19,8 @@ namespace RedGreenBlue.Controllers
     public class UserController : ControllerBase
     {
         private readonly IAuthService _authService;
-        private readonly PasswordHasher _passwordHasher;
-        public UserController(IAuthService authService, PasswordHasher passwordHasher)
+        private readonly IPasswordHasher _passwordHasher;
+        public UserController(IAuthService authService, IPasswordHasher passwordHasher)
         {
             _authService = authService;
             _passwordHasher = passwordHasher;
@@ -77,14 +79,13 @@ namespace RedGreenBlue.Controllers
         // }
 
         // POST: api/User
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<UserResponseDto>> PostUser(RegisterUserDto dto)
         {
             var user = new User
             {
                 Username = dto.Username,
-                Password = _passwordHasher.HashPassword(dto.Password),
+                Password = dto.Password,
                 Team = dto.Team
             };
 
@@ -99,7 +100,7 @@ namespace RedGreenBlue.Controllers
                 Team = newUser.Team
             };
 
-            return CreatedAtAction("GetUser", new { id = newUser.Id }, response);
+            return Ok(response);
         }
 
 

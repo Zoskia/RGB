@@ -23,7 +23,13 @@ public class AuthService : IAuthService
 
     public async Task<User?> RegisterAsync(User user)
     {
-        user.Password = _passwordHasher.HashPassword(user.Password);
+        string salt = _passwordHasher.GenerateSalt();
+        string hash = _passwordHasher.HashPassword(user.Password, salt);
+
+        user.Password = hash;
+        user.Salt = salt;
+
         return await _userRepository.AddNewUserAsync(user);
     }
+
 }
