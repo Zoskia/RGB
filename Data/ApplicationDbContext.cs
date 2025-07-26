@@ -13,7 +13,11 @@ namespace RedGreenBlue.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Cell>()
-        .HasKey(c => new { c.Q, c.R });
+            .HasKey(c => new { c.Q, c.R });
+
+            modelBuilder.Entity<User>()
+            .HasIndex(u => u.Username)
+            .IsUnique();
         }
     }
 }
