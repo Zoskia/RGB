@@ -6,5 +6,5 @@ namespace RedGreenBlue.Services;
 public interface IAuthService
 {
     Task<User?> RegisterAsync(User user);
-    Task<User?> LoginAsync(User user);
+    Task<User?> LoginAsync(string username, string password);
 }

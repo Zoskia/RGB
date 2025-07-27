@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RedGreenBlue.Data;
+using RedGreenBlue.Dtos;
 using RedGreenBlue.Dtos.User;
 using RedGreenBlue.Models;
 using RedGreenBlue.Services;
@@ -24,61 +25,8 @@ namespace RedGreenBlue.Controllers
             _authService = authService;
         }
 
-        // GET: api/User
-        // [HttpGet]
-        // public async Task<ActionResult<IEnumerable<User>>> GetUsers()
-        // {
-        //     //TODO
-        // }
-
-        // GET: api/User/5
-        // [HttpGet("{id}")]
-        // public async Task<ActionResult<User>> GetUser(int id)
-        // {
-        //     var user = await _context.Users.FindAsync(id);
-
-        //     if (user == null)
-        //     {
-        //         return NotFound();
-        //     }
-
-        //     return user;
-        // }
-
-        // PUT: api/User/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        // [HttpPut("{id}")]
-        // public async Task<IActionResult> PutUser(int id, User user)
-        // {
-        //     if (id != user.Id)
-        //     {
-        //         return BadRequest();
-        //     }
-
-        //     _context.Entry(user).State = EntityState.Modified;
-
-        //     try
-        //     {
-        //         await _context.SaveChangesAsync();
-        //     }
-        //     catch (DbUpdateConcurrencyException)
-        //     {
-        //         if (!UserExists(id))
-        //         {
-        //             return NotFound();
-        //         }
-        //         else
-        //         {
-        //             throw;
-        //         }
-        //     }
-
-        //     return NoContent();
-        // }
-
-        // POST: api/User
-        [HttpPost]
-        public async Task<ActionResult<UserResponseDto>> PostUser(RegisterUserDto dto)
+        [HttpPost("register")]
+        public async Task<ActionResult<UserResponseDto>> Register(RegisterUserDto dto)
         {
             var user = new User
             {
@@ -95,28 +43,30 @@ namespace RedGreenBlue.Controllers
             {
                 Id = newUser.Id,
                 Username = newUser.Username,
-                Team = newUser.Team
+                Team = newUser.Team,
+                IsAdmin = newUser.IsAdmin
             };
 
             return StatusCode(201, response); // TODO: implement CreatedAtAction()
         }
 
+        [HttpPost("login")]
+        public async Task<ActionResult<UserResponseDto>> Login(LoginUserDto dto)
+        {
+            var user = await _authService.LoginAsync(dto.Username, dto.Password);
+            if (user == null)
+                return Unauthorized("Invalid username or password");
 
-        // DELETE: api/User/5
-        // [HttpDelete("{id}")]
-        // public async Task<IActionResult> DeleteUser(int id)
-        // {
-        //     var user = await _context.Users.FindAsync(id);
-        //     if (user == null)
-        //     {
-        //         return NotFound();
-        //     }
+            var response = new UserResponseDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Team = user.Team,
+                IsAdmin = user.IsAdmin
+            };
 
-        //     _context.Users.Remove(user);
-        //     await _context.SaveChangesAsync();
-
-        //     return NoContent();
-        // }
+            return Ok(response);
+        }
 
     }
 }

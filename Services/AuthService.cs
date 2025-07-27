@@ -1,4 +1,6 @@
 using System;
+using Microsoft.AspNetCore.Identity;
+using RedGreenBlue.Dtos;
 using RedGreenBlue.Models;
 using RedGreenBlue.Repositories;
 using RedGreenBlue.Services.Interfaces;
@@ -16,10 +18,19 @@ public class AuthService : IAuthService
         _passwordHasher = passwordHasher;
     }
 
-    public Task<User?> LoginAsync(User user)
+    public async Task<User?> LoginAsync(string username, string password)
     {
-        throw new NotImplementedException();
+        var dbUser = await _userRepository.GetByUsernameAsync(username);
+        if (dbUser == null) return null;
+
+        bool isPasswordCorrect = _passwordHasher.VerifyPassword(dbUser.Password, password);
+        if (!isPasswordCorrect) return null;
+
+        return dbUser;
+
+        //TODO: JWT, session etc
     }
+
 
     public async Task<User?> RegisterAsync(User user)
     {
