@@ -6,14 +6,18 @@
       <h3 class="card-title">Login</h3>
     </div>
     <div class="card-body">
-      <form>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <div class="mb-3">
           <label class="form-label">Username</label>
-          <input type="text" class="form-control" placeholder="" />
+          <input type="text" class="form-control" formControlName="username" />
         </div>
         <div class="mb-4">
           <label class="form-label">Password</label>
-          <input type="password" class="form-control" placeholder="" />
+          <input
+            type="password"
+            class="form-control"
+            formControlName="password"
+          />
         </div>
         <button type="submit" class="btn btn-auth w-100 mb-3">Send</button>
 
