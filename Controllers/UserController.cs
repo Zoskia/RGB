@@ -1,17 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using RedGreenBlue.Data;
 using RedGreenBlue.Dtos;
 using RedGreenBlue.Dtos.User;
 using RedGreenBlue.Models;
 using RedGreenBlue.Services;
-using RedGreenBlue.Services.Interfaces;
 
 namespace RedGreenBlue.Controllers
 {
