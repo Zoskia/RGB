@@ -5,7 +5,7 @@ A small training project focused on practicing authentication, authorization, an
 ## Overview
 
 Users are divided into three groups: **Red**, **Green**, and **Blue**.  
-Each user can view the entire grid but only interact with hexes of their own color — and only within their specific color spectrum.  
+There are 3 seperate color-grids (red, green, blue). Each user can view every grid but only interact with hexes of their own color — and only within their specific color spectrum.  
 An **admin** user has full access to modify all hexes.
 
 The frontend features a color-selectable **hexagon grid** built with https://abbekeultjes.nl/honeycomb/guide/creating-grids.html
