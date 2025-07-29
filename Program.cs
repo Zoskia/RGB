@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RedGreenBlue.Data;
 using RedGreenBlue.Repositories;
+using RedGreenBlue.Repositories.Interfaces;
 using RedGreenBlue.Services;
 using RedGreenBlue.Services.Interfaces;
 
@@ -17,6 +18,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPasswordHasher, CustomPasswordHasher>();
+builder.Services.AddScoped<IGridRepository, GridRepository>();
+builder.Services.AddScoped<IGridService, GridService>();
 
 builder.Services.AddCors(options =>
 {

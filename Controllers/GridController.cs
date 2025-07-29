@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RedGreenBlue.Models;
+using RedGreenBlue.Services.Interfaces;
 
 namespace RedGreenBlue.Controllers
 {
@@ -8,10 +9,19 @@ namespace RedGreenBlue.Controllers
     [ApiController]
     public class GridController : ControllerBase
     {
-        [HttpGet("grid/{teamColor}")]
+        private readonly IGridService _gridService;
+        public GridController(IGridService gridService)
+        {
+            _gridService = gridService;
+        }
+
+        [HttpGet("{teamColor}")]
         public async Task<ActionResult<List<Cell>>> GetGrid(TeamColor teamColor)
         {
-            var grid = await _gridService.GetGridAsync(teamColor);
+            if (!Enum.IsDefined(typeof(TeamColor), teamColor))
+                return BadRequest("Invalid team color");
+
+            var grid = await _gridService.GetCellsAsync(teamColor);
             return Ok(grid);
         }
     }
