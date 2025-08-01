@@ -3,6 +3,7 @@ using RedGreenBlue.Dtos;
 using RedGreenBlue.Dtos.User;
 using RedGreenBlue.Models;
 using RedGreenBlue.Services;
+using RedGreenBlue.Services.Interfaces;
 
 namespace RedGreenBlue.Controllers
 {
@@ -11,9 +12,11 @@ namespace RedGreenBlue.Controllers
     public class UserController : ControllerBase
     {
         private readonly IAuthService _authService;
-        public UserController(IAuthService authService)
+        private readonly IJwtService _jwtService;
+        public UserController(IAuthService authService, IJwtService jwtService)
         {
             _authService = authService;
+            _jwtService = jwtService;
         }
 
         [HttpPost("register")]
@@ -42,15 +45,17 @@ namespace RedGreenBlue.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<UserResponseDto>> Login(LoginUserDto dto)
+        public async Task<ActionResult<LoginResponseDto>> Login(LoginUserDto dto)
         {
             var user = await _authService.LoginAsync(dto.Username, dto.Password);
             if (user == null)
                 return Unauthorized("Invalid username or password");
 
-            var response = new UserResponseDto
+            var token = _jwtService.GenerateToken(user);
+
+            var response = new LoginResponseDto
             {
-                Id = user.Id,
+                Token = token,
                 Username = user.Username,
                 Team = user.Team,
                 IsAdmin = user.IsAdmin
