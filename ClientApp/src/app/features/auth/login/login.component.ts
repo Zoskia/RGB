@@ -5,6 +5,8 @@ import { LoginService } from './login.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginUserDto } from '../../../dtos/login-user.dto';
 import { ReactiveFormsModule } from '@angular/forms';
+import { LoginResponseDto } from '../../../dtos/login-response.dto';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +18,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 export class LoginComponent {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private loginService: LoginService) {
+  constructor(
+    private fb: FormBuilder,
+    private loginService: LoginService,
+    private router: Router
+  ) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required],
@@ -35,8 +41,15 @@ export class LoginComponent {
     };
 
     this.loginService.loginUser(loginUser).subscribe({
-      next: (response) => {
+      next: (response: LoginResponseDto) => {
         console.log('Login successful:', response);
+
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('username', response.username);
+        localStorage.setItem('team', response.team.toString());
+        localStorage.setItem('isAdmin', response.isAdmin.toString());
+
+        this.router.navigate(['/hex-grid']);
       },
       error: (err) => {
         console.error('Login failed:', err);
