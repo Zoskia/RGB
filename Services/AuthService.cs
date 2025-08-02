@@ -27,8 +27,6 @@ public class AuthService : IAuthService
         if (!isPasswordCorrect) return null;
 
         return dbUser;
-
-        //TODO: JWT, session etc
     }
 
 
