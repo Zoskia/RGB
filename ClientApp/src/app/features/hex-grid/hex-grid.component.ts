@@ -1,6 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { NgFor } from '@angular/common';
 import { defineHex, Grid, rectangle } from 'honeycomb-grid';
+import { HexGridService } from './hex-grid.service';
 
 @Component({
   selector: 'app-hex-grid',
@@ -20,7 +21,7 @@ export class HexGridComponent {
   private lastY = 0;
   private dragging = false;
 
-  constructor() {
+  constructor(private hexGridService: HexGridService) {
     // Create a hex “class” with 50px radius, pixel origin at top-left
     const Hex = defineHex({ dimensions: 50, origin: 'topLeft' });
 
@@ -56,12 +57,23 @@ export class HexGridComponent {
     this.offsetY = viewCenterY - gridCenterY;
   }
 
+  ngOnInit(): void {
+    this.hexGridService.generateHexGrid().subscribe({
+      next: (res) => {
+        console.log('Ping erfolgreich:', res);
+      },
+      error: (err) => {
+        console.error('Ping fehlgeschlagen:', err);
+      },
+    });
+  }
+
   // Return SVG‑ready "points" string from pixel corners
   getPolygonPoints(hex: { corners: { x: number; y: number }[] }): string {
     return hex.corners.map((p) => `${p.x},${p.y}`).join(' ');
   }
 
-  // Mouse events to allow drag‑to‑pan interaction
+  // MOUSE EVENTS
   @HostListener('mousedown', ['$event'])
   onMouseDown(e: MouseEvent) {
     this.dragging = true;

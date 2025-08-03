@@ -17,6 +17,13 @@ namespace RedGreenBlue.Controllers
             _gridService = gridService;
         }
 
+        [HttpGet("ping")]
+        public IActionResult PingGrid()
+        {
+            return Ok(new { message = "Ping successful" });
+        }
+
+
         [HttpGet("{teamColor}")]
         public async Task<ActionResult<List<Cell>>> GetGrid(TeamColor teamColor)
         {
