@@ -63,6 +63,15 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// DB INIT
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await db.Database.MigrateAsync();
+
+    await DbInitializer.SeedRectangleForAllTeamsAsync(db, width: 100, height: 100);
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

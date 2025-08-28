@@ -13,7 +13,9 @@ namespace RedGreenBlue.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Cell>()
-            .HasKey(c => new { c.Q, c.R });
+            .HasKey(c => new { c.Q, c.R, c.TeamColor });
+
+            modelBuilder.Entity<Cell>().HasIndex(c => new { c.TeamColor, c.R, c.Q });
 
             modelBuilder.Entity<User>()
             .HasIndex(u => u.Username)
