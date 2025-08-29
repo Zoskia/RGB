@@ -16,7 +16,6 @@
   cursor: grabbing;
 }
 .hex-polygon {
-  fill: #ffffff;
   stroke: #000000;
   stroke-width: 1px;
 }
