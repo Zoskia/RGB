@@ -1,4 +1,6 @@
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -11,14 +13,27 @@ using RedGreenBlue.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+// Controllers + JSON (camelCase keys for JS/TS clients)
+builder.Services.AddControllers()
+    .AddJsonOptions(o =>
+    {
+        // Ensure camelCase for JSON property names (e.g., q, r, hexColor, teamColor)
+        o.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        o.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+
+        // If you ever want enums as strings instead of numbers, uncomment:
+        // o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 
+// EF Core (SQLite)
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// DI registrations
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPasswordHasher, CustomPasswordHasher>();
@@ -26,6 +41,7 @@ builder.Services.AddScoped<IGridRepository, GridRepository>();
 builder.Services.AddScoped<IGridService, GridService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 
+// JWT auth
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
 var key = Encoding.UTF8.GetBytes(jwtSettings.Key);
 
@@ -45,12 +61,13 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = jwtSettings.Issuer,
         ValidAudience = jwtSettings.Audience,
         IssuerSigningKey = new SymmetricSecurityKey(key),
-        ClockSkew = TimeSpan.Zero
+        ClockSkew = TimeSpan.Zero // no extra leeway
     };
 });
 
 builder.Services.AddAuthorization();
 
+// CORS for Angular dev server
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp", policy =>
@@ -58,17 +75,19 @@ builder.Services.AddCors(options =>
         policy.WithOrigins("http://localhost:4200")
               .AllowAnyHeader()
               .AllowAnyMethod();
+        // If you need cookies: .AllowCredentials();
     });
 });
 
 var app = builder.Build();
 
-// DB INIT
+// DB INIT (migrate + seed)
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await db.Database.MigrateAsync();
 
+    // Seed a 100x100 rectangle for all teams (adjust as needed)
     await DbInitializer.SeedRectangleForAllTeamsAsync(db, width: 100, height: 100);
 }
 
@@ -77,8 +96,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
+else
+{
+    // Only redirect to HTTPS outside Development to avoid port warnings locally
+    app.UseHttpsRedirection();
+}
 
 app.UseCors("AllowAngularApp");
 
