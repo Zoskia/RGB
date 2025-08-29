@@ -17,11 +17,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers()
     .AddJsonOptions(o =>
     {
-        // Ensure camelCase for JSON property names (e.g., q, r, hexColor, teamColor)
         o.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         o.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
-
-        // If you ever want enums as strings instead of numbers, uncomment:
         // o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
@@ -61,7 +58,7 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = jwtSettings.Issuer,
         ValidAudience = jwtSettings.Audience,
         IssuerSigningKey = new SymmetricSecurityKey(key),
-        ClockSkew = TimeSpan.Zero // no extra leeway
+        ClockSkew = TimeSpan.Zero
     };
 });
 
@@ -75,7 +72,7 @@ builder.Services.AddCors(options =>
         policy.WithOrigins("http://localhost:4200")
               .AllowAnyHeader()
               .AllowAnyMethod();
-        // If you need cookies: .AllowCredentials();
+        // .AllowCredentials();
     });
 });
 
@@ -87,7 +84,6 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await db.Database.MigrateAsync();
 
-    // Seed a 100x100 rectangle for all teams (adjust as needed)
     await DbInitializer.SeedRectangleForAllTeamsAsync(db, width: 100, height: 100);
 }
 
@@ -98,15 +94,11 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    // Only redirect to HTTPS outside Development to avoid port warnings locally
     app.UseHttpsRedirection();
 }
 
 app.UseCors("AllowAngularApp");
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

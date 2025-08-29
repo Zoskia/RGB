@@ -2,9 +2,13 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LoginService } from './login.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { LoginUserDto } from '../../../dtos/login-user.dto';
-import { ReactiveFormsModule } from '@angular/forms';
 import { LoginResponseDto } from '../../../dtos/login-response.dto';
 import { Router } from '@angular/router';
 
@@ -49,7 +53,7 @@ export class LoginComponent {
         localStorage.setItem('team', response.team.toString());
         localStorage.setItem('isAdmin', response.isAdmin.toString());
 
-        this.router.navigate(['/hex-grid']);
+        this.router.navigate(['/hex-grid', response.team]);
       },
       error: (err) => {
         console.error('Login failed:', err);
