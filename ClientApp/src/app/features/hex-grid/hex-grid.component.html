@@ -5,6 +5,7 @@
         <polygon
           *ngFor="let hex of hexes"
           [attr.points]="getPolygonPoints(hex)"
+          [attr.fill]="hex.fill"
           class="hex-polygon"
         />
       </g>

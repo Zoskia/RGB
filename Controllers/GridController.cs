@@ -24,7 +24,7 @@ namespace RedGreenBlue.Controllers
         }
 
 
-        [HttpGet("{teamColor}")]
+        [HttpGet("{teamColor:int}")]
         public async Task<ActionResult<List<Cell>>> GetGrid(TeamColor teamColor)
         {
             if (!Enum.IsDefined(typeof(TeamColor), teamColor))

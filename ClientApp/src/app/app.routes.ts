@@ -17,7 +17,7 @@ export const routes: Routes = [
     title: 'Register',
   },
   {
-    path: 'hex-grid',
+    path: 'hex-grid/:team',
     component: HexGridComponent,
     title: 'HexGrid',
     canActivate: [AuthGuard],
