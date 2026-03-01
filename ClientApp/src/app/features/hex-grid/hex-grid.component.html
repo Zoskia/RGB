@@ -1,15 +1,31 @@
-<div class="container">
-  <div class="viewport">
-    <svg width="800" height="600">
-      <g [attr.transform]="'translate(' + offsetX + ',' + offsetY + ')'">
-        <polygon
-          *ngFor="let hex of hexes"
-          [attr.points]="getPolygonPoints(hex)"
-          [attr.fill]="hex.fill"
-          class="hex-polygon"
-          (click)="onClickNotDrag()"
-        />
-      </g>
-    </svg>
+<div class="wrapper">
+  <div class="grid-container">
+    <div class="viewport">
+      <svg width="800" height="600">
+        <g [attr.transform]="'translate(' + offsetX + ',' + offsetY + ')'">
+          <polygon
+            *ngFor="let hex of hexes"
+            [attr.points]="getPolygonPoints(hex)"
+            [attr.fill]="hex.fill"
+            class="hex-polygon"
+            (click)="onHexClick(hex, $event)"
+          />
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <!-- COLOR PICKER -->
+  <div
+    *ngIf="overlayOpen"
+    class="color-overlay"
+    (click)="$event.stopPropagation()"
+  >
+    <input
+      type="color"
+      [(ngModel)]="selectedColor"
+      (ngModelChange)="applyColorLive($event)"
+      (keydown.escape)="onEscapeKey()"
+    />
   </div>
 </div>
