@@ -28,6 +28,7 @@
     <Folder Include="ClientApp/src/app/core/" />
     <Folder Include="ClientApp/src/app/enums/" />
     <Folder Include="ClientApp/src/app/shared/" />
+    <Folder Include="ClientApp/src/app/shared/utils/" />
     <Folder Include="ClientApp/src/environments/" />
   </ItemGroup>
 
