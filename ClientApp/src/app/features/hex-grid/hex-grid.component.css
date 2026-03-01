@@ -25,6 +25,7 @@
   cursor: grab;
   background: #fff;
   user-select: none;
+  border-radius: 5rem;
 }
 
 .viewport:active {

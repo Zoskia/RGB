@@ -6,7 +6,10 @@ import { defineHex, Grid, rectangle } from 'honeycomb-grid';
 import { HexGridService } from './hex-grid.service';
 import { CellModel } from '../../models/cell.model';
 import { ActivatedRoute } from '@angular/router';
-import { isValidHexColor, toPickerHexColor } from '../../shared/utils/color.utils';
+import {
+  isValidHexColor,
+  toPickerHexColor,
+} from '../../shared/utils/color.utils';
 
 // View model used by the template to render a single polygon cell.
 type RenderHex = {
