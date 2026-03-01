@@ -1,4 +1,5 @@
 using System;
+using RedGreenBlue.Dtos;
 using RedGreenBlue.Models;
 using RedGreenBlue.Repositories;
 using RedGreenBlue.Repositories.Interfaces;
@@ -17,5 +18,10 @@ public class GridService : IGridService
     public async Task<List<Cell>> GetCellsAsync(TeamColor teamColor)
     {
         return await _gridRepository.GetCellsAsync(teamColor);
+    }
+
+    public async Task<bool> UpdateCellColorAsync(UpdateCellColorDto newCell)
+    {
+        return await _gridRepository.UpdateCellColorAsync(newCell);
     }
 }

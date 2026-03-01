@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RedGreenBlue.Dtos;
 using RedGreenBlue.Models;
 using RedGreenBlue.Services.Interfaces;
 
@@ -33,5 +34,16 @@ namespace RedGreenBlue.Controllers
             var grid = await _gridService.GetCellsAsync(teamColor);
             return Ok(grid);
         }
+
+        [HttpPut("cell")]
+        public async Task<IActionResult> UpdateCellColorAsync([FromBody] UpdateCellColorDto cell)
+        {
+            var updated = await _gridService.UpdateCellColorAsync(cell);
+            if (!updated) return NotFound();
+
+            return NoContent();
+        }
+
+
     }
 }
