@@ -22,64 +22,49 @@
 }
 
 .team-nav {
-  display: inline-flex;
-  gap: 0.55rem;
-  padding: 0.5rem;
-  border: 1px solid var(--frame-border);
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.45rem;
+  border: 1px solid #d2d3d6;
   border-radius: 1rem;
-  background: linear-gradient(180deg, #f6f6f7 0%, #ebebed 100%);
-  box-shadow:
-    0 10px 20px rgb(0 0 0 / 8%),
-    inset 0 1px 0 rgb(255 255 255 / 70%);
+  background: #f1f1f2;
+  box-shadow: 0 8px 16px rgb(0 0 0 / 10%);
 }
 
 .team-nav__link {
-  min-width: 4rem;
-  padding: 0.45rem 1rem;
+  min-width: 3.5rem;
+  padding: 0.45rem 0.9rem;
   border-radius: 999px;
-  border: 1px solid #cbccd0;
-  background: linear-gradient(180deg, #ececee 0%, #dfe0e3 100%);
-  color: #6e757c;
+  border: 1px solid #cfd0d4;
+  background: #e5e6e8;
+  color: #5f666d;
   text-decoration: none;
   text-align: center;
-  font-family: 'Avenir Next', 'Segoe UI', sans-serif;
-  font-size: 1.3rem;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1.2rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   line-height: 1;
-  transition:
-    transform 0.16s ease,
-    color 0.16s ease,
-    box-shadow 0.16s ease,
-    border-color 0.16s ease,
-    background 0.16s ease;
-}
-
-.team-nav__link:hover {
-  transform: translateY(-1px);
-  color: #5e656d;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .team-nav__link.is-active {
-  color: #fbfbfb;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 34%),
-    0 8px 14px rgb(0 0 0 / 14%);
+  color: #ffffff;
 }
 
-.team-nav__link.is-active[data-team='red'] {
+.team-nav__link--red.is-active {
   border-color: #c36a70;
-  background: linear-gradient(180deg, #e89498 0%, #dc7178 100%);
+  background: #df7b82;
 }
 
-.team-nav__link.is-active[data-team='green'] {
+.team-nav__link--green.is-active {
   border-color: #6fa087;
-  background: linear-gradient(180deg, #98c8b0 0%, #72a88c 100%);
+  background: #7eb294;
 }
 
-.team-nav__link.is-active[data-team='blue'] {
+.team-nav__link--blue.is-active {
   border-color: #6b8fb8;
-  background: linear-gradient(180deg, #93b7df 0%, #6f96c2 100%);
+  background: #7ea4d1;
 }
 
 .grid-shell {

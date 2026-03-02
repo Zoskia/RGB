@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { defineHex, Grid, rectangle } from 'honeycomb-grid';
 import { HexGridService } from './hex-grid.service';
 import { CellModel } from '../../models/cell.model';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
 import {
   isValidHexColor,
   toPickerHexColor,
@@ -21,16 +21,10 @@ type RenderHex = {
   fill: string;
 };
 
-type TeamTab = {
-  key: 'red' | 'green' | 'blue';
-  label: string;
-  value: TeamColor;
-};
-
 @Component({
   selector: 'app-hex-grid',
   standalone: true,
-  imports: [NgFor, FormsModule, NgIf, RouterLink],
+  imports: [NgFor, FormsModule, NgIf, RouterLink, RouterLinkActive],
   templateUrl: './hex-grid.component.html',
   styleUrls: ['./hex-grid.component.css'],
 })
@@ -57,13 +51,6 @@ export class HexGridComponent {
   selectedHex: RenderHex | null = null;
   overlayOpen = false;
   selectedColor = '#cccccc';
-
-  activeTeam: TeamColor = TeamColor.Red;
-  readonly teamTabs: TeamTab[] = [
-    { key: 'red', label: 'R', value: TeamColor.Red },
-    { key: 'green', label: 'G', value: TeamColor.Green },
-    { key: 'blue', label: 'B', value: TeamColor.Blue },
-  ];
 
   // Track initial and latest picker values to preserve the last live selection on ESC.
   private colorAtOpen = this.defaultFill.toLowerCase();
@@ -124,7 +111,6 @@ export class HexGridComponent {
           return;
         }
 
-        this.activeTeam = team;
         localStorage.setItem('team', String(team));
         this.closeOverlay();
         this.loadGrid(team);

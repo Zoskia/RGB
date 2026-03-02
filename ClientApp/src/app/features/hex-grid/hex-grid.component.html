@@ -1,15 +1,8 @@
 <div class="wrapper">
   <nav class="team-nav" aria-label="Team navigation">
-    <a
-      *ngFor="let team of teamTabs"
-      class="team-nav__link"
-      [routerLink]="['/hex-grid', team.value]"
-      [attr.data-team]="team.key"
-      [class.is-active]="team.value === activeTeam"
-      [attr.aria-current]="team.value === activeTeam ? 'page' : null"
-    >
-      {{ team.label }}
-    </a>
+    <a class="team-nav__link team-nav__link--red" routerLink="/hex-grid/0" routerLinkActive="is-active">R</a>
+    <a class="team-nav__link team-nav__link--green" routerLink="/hex-grid/1" routerLinkActive="is-active">G</a>
+    <a class="team-nav__link team-nav__link--blue" routerLink="/hex-grid/2" routerLinkActive="is-active">B</a>
   </nav>
 
   <section class="grid-shell">
