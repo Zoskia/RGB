@@ -4,14 +4,18 @@
 
 .wrapper {
   min-height: 100dvh;
-  padding: 3rem 1.5rem 2rem;
+  padding: 2rem 1.5rem 2rem;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2.5rem;
-  background:
-    radial-gradient(circle at 50% -10%, #ffffff 0%, #f2f2f3 46%, #e9e9eb 100%);
+  gap: 1.5rem;
+  background: radial-gradient(
+    circle at 50% -10%,
+    #ffffff 0%,
+    #f2f2f3 46%,
+    #e9e9eb 100%
+  );
 
   --frame-border: #d1d2d5;
   --panel-bg: #efeff0;
@@ -40,12 +44,15 @@
   color: #5f666d;
   text-decoration: none;
   text-align: center;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
   font-size: 1.2rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   line-height: 1;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .team-nav__link.is-active {
