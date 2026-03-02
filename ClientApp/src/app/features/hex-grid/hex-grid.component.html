@@ -1,31 +1,45 @@
 <div class="wrapper">
-  <div class="grid-container">
-    <div class="viewport">
-      <svg width="800" height="600">
-        <g [attr.transform]="'translate(' + offsetX + ',' + offsetY + ')'">
-          <polygon
-            *ngFor="let hex of hexes"
-            [attr.points]="getPolygonPoints(hex)"
-            [attr.fill]="hex.fill"
-            class="hex-polygon"
-            (click)="onHexClick(hex, $event)"
-          />
-        </g>
-      </svg>
-    </div>
-  </div>
+  <nav class="team-nav" aria-label="Team navigation">
+    <a
+      *ngFor="let team of teamTabs"
+      class="team-nav__link"
+      [routerLink]="['/hex-grid', team.value]"
+      [attr.data-team]="team.key"
+      [class.is-active]="team.value === activeTeam"
+      [attr.aria-current]="team.value === activeTeam ? 'page' : null"
+    >
+      {{ team.label }}
+    </a>
+  </nav>
 
-  <!-- COLOR PICKER -->
-  <div
-    *ngIf="overlayOpen"
-    class="color-overlay"
-    (click)="$event.stopPropagation()"
-  >
-    <input
-      type="color"
-      [(ngModel)]="selectedColor"
-      (ngModelChange)="applyColorLive($event)"
-      (keydown.escape)="onEscapeKey()"
-    />
-  </div>
+  <section class="grid-shell">
+    <div class="grid-container">
+      <div class="viewport">
+        <svg class="grid-svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
+          <g [attr.transform]="'translate(' + offsetX + ',' + offsetY + ')'">
+            <polygon
+              *ngFor="let hex of hexes"
+              [attr.points]="getPolygonPoints(hex)"
+              [attr.fill]="hex.fill"
+              class="hex-polygon"
+              (click)="onHexClick(hex, $event)"
+            />
+          </g>
+        </svg>
+      </div>
+
+      <div
+        *ngIf="overlayOpen"
+        class="color-overlay"
+        (click)="$event.stopPropagation()"
+      >
+        <input
+          type="color"
+          [(ngModel)]="selectedColor"
+          (ngModelChange)="applyColorLive($event)"
+          (keydown.escape)="onEscapeKey()"
+        />
+      </div>
+    </div>
+  </section>
 </div>

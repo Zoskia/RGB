@@ -1,15 +1,17 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, DestroyRef, HostListener } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { defineHex, Grid, rectangle } from 'honeycomb-grid';
 import { HexGridService } from './hex-grid.service';
 import { CellModel } from '../../models/cell.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   isValidHexColor,
   toPickerHexColor,
 } from '../../shared/utils/color.utils';
+import { TeamColor } from '../../enums/team-color.enum';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 // View model used by the template to render a single polygon cell.
 type RenderHex = {
@@ -19,10 +21,16 @@ type RenderHex = {
   fill: string;
 };
 
+type TeamTab = {
+  key: 'red' | 'green' | 'blue';
+  label: string;
+  value: TeamColor;
+};
+
 @Component({
   selector: 'app-hex-grid',
   standalone: true,
-  imports: [NgFor, FormsModule, NgIf],
+  imports: [NgFor, FormsModule, NgIf, RouterLink],
   templateUrl: './hex-grid.component.html',
   styleUrls: ['./hex-grid.component.css'],
 })
@@ -50,6 +58,13 @@ export class HexGridComponent {
   overlayOpen = false;
   selectedColor = '#cccccc';
 
+  activeTeam: TeamColor = TeamColor.Red;
+  readonly teamTabs: TeamTab[] = [
+    { key: 'red', label: 'R', value: TeamColor.Red },
+    { key: 'green', label: 'G', value: TeamColor.Green },
+    { key: 'blue', label: 'B', value: TeamColor.Blue },
+  ];
+
   // Track initial and latest picker values to preserve the last live selection on ESC.
   private colorAtOpen = this.defaultFill.toLowerCase();
   private lastLiveColor = this.defaultFill.toLowerCase();
@@ -60,6 +75,7 @@ export class HexGridComponent {
   constructor(
     private hexGridService: HexGridService,
     private route: ActivatedRoute,
+    private destroyRef: DestroyRef,
   ) {
     const Hex = defineHex({ dimensions: 50, origin: 'topLeft' });
     const grid = new Grid(Hex, rectangle({ width: 100, height: 100 }));
@@ -97,28 +113,22 @@ export class HexGridComponent {
    * Loads persisted cell colors for the team from the route param.
    */
   ngOnInit(): void {
-    const teamParam = this.route.snapshot.paramMap.get('team');
-    const team = Number(teamParam);
-    if (Number.isNaN(team)) {
-      console.error('Invalid team route param:', teamParam);
-      return;
-    }
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        const teamParam = params.get('team');
+        const team = Number(teamParam);
 
-    this.hexGridService.getGrid(team).subscribe({
-      next: (cells: CellModel[]) => {
-        const cellMap = new Map<string, string>();
-        for (const c of cells) {
-          cellMap.set(`${c.q},${c.r}`, c.hexColor);
+        if (!this.isValidTeam(team)) {
+          console.error('Invalid team route param:', teamParam);
+          return;
         }
 
-        for (const h of this.hexes) {
-          h.fill = cellMap.get(`${h.q},${h.r}`) ?? this.defaultFill;
-        }
-      },
-      error: (err) => {
-        console.error('Grid load failed:', err);
-      },
-    });
+        this.activeTeam = team;
+        localStorage.setItem('team', String(team));
+        this.closeOverlay();
+        this.loadGrid(team);
+      });
   }
 
   /**
@@ -268,5 +278,29 @@ export class HexGridComponent {
   closeOverlay(): void {
     this.overlayOpen = false;
     this.selectedHex = null;
+  }
+
+  private loadGrid(team: TeamColor): void {
+    this.hexGridService.getGrid(team).subscribe({
+      next: (cells: CellModel[]) => {
+        const cellMap = new Map<string, string>();
+        for (const c of cells) {
+          cellMap.set(`${c.q},${c.r}`, c.hexColor);
+        }
+
+        for (const h of this.hexes) {
+          h.fill = cellMap.get(`${h.q},${h.r}`) ?? this.defaultFill;
+        }
+      },
+      error: (err) => {
+        console.error('Grid load failed:', err);
+      },
+    });
+  }
+
+  private isValidTeam(team: number): team is TeamColor {
+    return [TeamColor.Red, TeamColor.Green, TeamColor.Blue].includes(
+      team as TeamColor,
+    );
   }
 }
