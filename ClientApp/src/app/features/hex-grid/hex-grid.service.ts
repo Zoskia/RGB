@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { CellModel } from '../../models/cell.model';
+import { UpdateColorDto } from '../../dtos/update-color.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -10,11 +11,11 @@ import { CellModel } from '../../models/cell.model';
 export class HexGridService {
   constructor(private http: HttpClient) {}
 
-  // generateHexGrid(): Observable<any> {
-  //   return this.http.get(`${environment.apiUrl}/grid/ping`);
-  // }
-
   getGrid(team: number): Observable<CellModel[]> {
     return this.http.get<CellModel[]>(`${environment.apiUrl}/grid/${team}`);
+  }
+
+  updateCellColor(cell: UpdateColorDto): Observable<void> {
+    return this.http.put<void>(`${environment.apiUrl}/grid/cell`, cell);
   }
 }

@@ -12,6 +12,7 @@ import {
 } from '../../shared/utils/color.utils';
 import { TeamColor } from '../../enums/team-color.enum';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { UpdateColorDto } from '../../dtos/update-color.dto';
 
 // View model used by the template to render a single polygon cell.
 type RenderHex = {
@@ -51,6 +52,7 @@ export class HexGridComponent {
   selectedHex: RenderHex | null = null;
   overlayOpen = false;
   selectedColor = '#cccccc';
+  currentTeam: TeamColor | null = null;
 
   // Track initial and latest picker values to preserve the last live selection on ESC.
   private colorAtOpen = this.defaultFill.toLowerCase();
@@ -112,6 +114,7 @@ export class HexGridComponent {
         }
 
         localStorage.setItem('team', String(team));
+        this.currentTeam = team;
         this.closeOverlay();
         this.loadGrid(team);
       });
@@ -135,7 +138,7 @@ export class HexGridComponent {
     const insideOverlay = !!target?.closest('.color-overlay');
 
     if (this.overlayOpen && !insideViewport && !insideOverlay) {
-      this.closeOverlay();
+      this.closeOverlay(true);
     }
 
     if (!insideViewport) {
@@ -152,7 +155,7 @@ export class HexGridComponent {
   }
 
   /**
-   * Finalizes the currently selected live color and closes the overlay.
+   * Applies the latest preview color, persists it, then closes the overlay.
    */
   @HostListener('document:keydown.escape')
   onEscapeKey(): void {
@@ -161,7 +164,7 @@ export class HexGridComponent {
       this.selectedHex.fill = this.lastLiveColor;
       this.selectedColor = this.lastLiveColor;
     }
-    this.closeOverlay();
+    this.closeOverlay(true);
   }
 
   /**
@@ -228,7 +231,7 @@ export class HexGridComponent {
       return;
     }
 
-    // Native picker ESC can emit the opening color again; keep the last live color and close.
+    // Native picker ESC can emit the opening color again; keep the latest live color and close.
     const cancelledBackToOpenColor =
       normalizedColor === this.colorAtOpen &&
       this.lastLiveColor !== this.colorAtOpen;
@@ -237,7 +240,7 @@ export class HexGridComponent {
         this.selectedHex.fill = this.lastLiveColor;
       }
       this.selectedColor = this.lastLiveColor;
-      this.closeOverlay();
+      this.closeOverlay(true);
       return;
     }
 
@@ -248,22 +251,36 @@ export class HexGridComponent {
   }
 
   /**
-   * Legacy explicit apply handler (currently optional if no apply button is shown).
+   * Closes the overlay and optionally persists the current selection.
    */
-  applyColor(): void {
-    if (!this.selectedHex) return;
-
-    this.selectedHex.fill = this.selectedColor;
+  closeOverlay(persist = false): void {
+    if (persist) {
+      this.persistSelectedHexColor();
+    }
     this.overlayOpen = false;
     this.selectedHex = null;
   }
 
   /**
-   * Closes the overlay and clears the current selection.
+   * Persists the selected cell color for the active team.
    */
-  closeOverlay(): void {
-    this.overlayOpen = false;
-    this.selectedHex = null;
+  private persistSelectedHexColor(): void {
+    if (!this.selectedHex || this.currentTeam === null) {
+      return;
+    }
+
+    const updateCell: UpdateColorDto = {
+      q: this.selectedHex.q,
+      r: this.selectedHex.r,
+      hexColor: this.selectedHex.fill,
+      teamColor: this.currentTeam,
+    };
+
+    this.hexGridService.updateCellColor(updateCell).subscribe({
+      error: (err) => {
+        console.error('Cell color update failed:', err);
+      },
+    });
   }
 
   private loadGrid(team: TeamColor): void {
