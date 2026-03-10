@@ -38,10 +38,17 @@ namespace RedGreenBlue.Controllers
         [HttpPut("cell")]
         public async Task<IActionResult> UpdateCellColorAsync([FromBody] UpdateCellColorDto cell)
         {
-            var updated = await _gridService.UpdateCellColorAsync(cell);
-            if (!updated) return NotFound();
+            try
+            {
+                var updated = await _gridService.UpdateCellColorAsync(cell);
+                if (!updated) return NotFound();
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 

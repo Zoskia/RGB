@@ -1,14 +1,33 @@
 <div class="wrapper">
   <nav class="team-nav" aria-label="Team navigation">
-    <a class="team-nav__link team-nav__link--red" routerLink="/hex-grid/0" routerLinkActive="is-active">R</a>
-    <a class="team-nav__link team-nav__link--green" routerLink="/hex-grid/1" routerLinkActive="is-active">G</a>
-    <a class="team-nav__link team-nav__link--blue" routerLink="/hex-grid/2" routerLinkActive="is-active">B</a>
+    <a
+      class="team-nav__link team-nav__link--red"
+      routerLink="/hex-grid/0"
+      routerLinkActive="is-active"
+      >R</a
+    >
+    <a
+      class="team-nav__link team-nav__link--green"
+      routerLink="/hex-grid/1"
+      routerLinkActive="is-active"
+      >G</a
+    >
+    <a
+      class="team-nav__link team-nav__link--blue"
+      routerLink="/hex-grid/2"
+      routerLinkActive="is-active"
+      >B</a
+    >
   </nav>
 
   <section class="grid-shell">
     <div class="grid-container">
       <div class="viewport">
-        <svg class="grid-svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
+        <svg
+          class="grid-svg"
+          viewBox="0 0 800 600"
+          preserveAspectRatio="xMidYMid meet"
+        >
           <g [attr.transform]="'translate(' + offsetX + ',' + offsetY + ')'">
             <polygon
               *ngFor="let hex of hexes"
@@ -26,6 +45,15 @@
         class="color-overlay"
         (click)="$event.stopPropagation()"
       >
+        <div
+          *ngIf="spectrumErrorOpen"
+          class="spectrum-error-popup"
+          role="alert"
+        >
+          <span>Wrong color spectrum!</span>
+          <!-- <button type="button" (click)="onSpectrumErrorClose()">Close</button> -->
+        </div>
+
         <input
           type="color"
           [(ngModel)]="selectedColor"

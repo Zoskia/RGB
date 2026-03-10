@@ -1,3 +1,5 @@
+import { TeamColor } from '../../enums/team-color.enum';
+
 // Converts supported color formats into #rrggbb for <input type="color">.
 export function toPickerHexColor(
   color: string | null | undefined,
@@ -40,4 +42,26 @@ export function toPickerHexColor(
 // Native color inputs require exactly a 6-digit hex string.
 export function isValidHexColor(color: string): boolean {
   return /^#[0-9A-Fa-f]{6}$/.test(color);
+}
+
+// Validating correct color spectrum for current grid
+
+export function isCorrectColorSpectrum(
+  teamColor: TeamColor,
+  color: string,
+): boolean {
+  const normalizedColor = toPickerHexColor(color);
+  if (!normalizedColor || !isValidHexColor(normalizedColor)) return false;
+
+  const r = parseInt(normalizedColor.slice(1, 3), 16);
+  const g = parseInt(normalizedColor.slice(3, 5), 16);
+  const b = parseInt(normalizedColor.slice(5, 7), 16);
+
+  // Require one strictly dominant channel; ties are invalid.
+  let dominantTeam: TeamColor | null = null;
+  if (r > g && r > b) dominantTeam = TeamColor.Red;
+  if (g > r && g > b) dominantTeam = TeamColor.Green;
+  if (b > r && b > g) dominantTeam = TeamColor.Blue;
+
+  return dominantTeam !== null && dominantTeam === teamColor;
 }

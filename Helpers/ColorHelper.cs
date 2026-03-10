@@ -11,7 +11,9 @@ public static class ColorHelper
         var (r, g, b) = HexStringToRgb(hex);
         if (r > g && r > b) return 'R';
         if (g > r && g > b) return 'G';
-        return 'B';
+        if (b > r && b > g) return 'B';
+
+        throw new InvalidOperationException("Color channels are tied. A unique dominant channel is required.");
     }
 
     private static (byte R, byte G, byte B) HexStringToRgb(string hexCode)

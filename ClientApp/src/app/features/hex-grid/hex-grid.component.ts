@@ -7,6 +7,7 @@ import { HexGridService } from './hex-grid.service';
 import { CellModel } from '../../models/cell.model';
 import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
 import {
+  isCorrectColorSpectrum,
   isValidHexColor,
   toPickerHexColor,
 } from '../../shared/utils/color.utils';
@@ -53,6 +54,7 @@ export class HexGridComponent {
   overlayOpen = false;
   selectedColor = '#cccccc';
   currentTeam: TeamColor | null = null;
+  spectrumErrorOpen = false;
 
   // Track initial and latest picker values to preserve the last live selection on ESC.
   private colorAtOpen = this.defaultFill.toLowerCase();
@@ -218,6 +220,7 @@ export class HexGridComponent {
       this.defaultFill.toLowerCase();
     this.colorAtOpen = this.selectedColor;
     this.lastLiveColor = this.selectedColor;
+    this.spectrumErrorOpen = false;
     this.overlayOpen = true;
   }
 
@@ -244,6 +247,15 @@ export class HexGridComponent {
       return;
     }
 
+    if (
+      this.currentTeam !== null &&
+      !isCorrectColorSpectrum(this.currentTeam, normalizedColor)
+    ) {
+      this.spectrumErrorOpen = true;
+      return;
+    }
+
+    this.spectrumErrorOpen = false;
     this.lastLiveColor = normalizedColor;
     this.selectedColor = normalizedColor;
     if (!this.selectedHex) return;
@@ -255,30 +267,96 @@ export class HexGridComponent {
    */
   closeOverlay(persist = false): void {
     if (persist) {
-      this.persistSelectedHexColor();
+      const persisted = this.persistSelectedHexColor();
+      if (!persisted) {
+        return;
+      }
     }
+
     this.overlayOpen = false;
     this.selectedHex = null;
+    this.spectrumErrorOpen = false;
   }
 
   /**
    * Persists the selected cell color for the active team.
    */
-  private persistSelectedHexColor(): void {
+  private persistSelectedHexColor(): boolean {
     if (!this.selectedHex || this.currentTeam === null) {
-      return;
+      return true;
     }
+
+    const normalizedColor = toPickerHexColor(this.selectedHex.fill);
+    if (
+      !normalizedColor ||
+      !isCorrectColorSpectrum(this.currentTeam, normalizedColor)
+    ) {
+      this.spectrumErrorOpen = true;
+      return false;
+    }
+
+    this.selectedHex.fill = normalizedColor;
 
     const updateCell: UpdateColorDto = {
       q: this.selectedHex.q,
       r: this.selectedHex.r,
-      hexColor: this.selectedHex.fill,
+      hexColor: normalizedColor,
       teamColor: this.currentTeam,
     };
 
     this.hexGridService.updateCellColor(updateCell).subscribe({
       error: (err) => {
         console.error('Cell color update failed:', err);
+      },
+    });
+
+    return true;
+  }
+
+  onSpectrumErrorClose(): void {
+    this.spectrumErrorOpen = false;
+    this.restoreSelectedHexColorFromDb();
+  }
+
+  private restoreSelectedHexColorFromDb(): void {
+    if (!this.selectedHex || this.currentTeam === null) {
+      return;
+    }
+
+    // Optimistically reset to the opening value, then sync with the latest DB value.
+    this.selectedHex.fill = this.colorAtOpen;
+    this.selectedColor = this.colorAtOpen;
+    this.lastLiveColor = this.colorAtOpen;
+
+    const selectedQ = this.selectedHex.q;
+    const selectedR = this.selectedHex.r;
+
+    this.hexGridService.getGrid(this.currentTeam).subscribe({
+      next: (cells: CellModel[]) => {
+        const dbColor =
+          cells.find((c) => c.q === selectedQ && c.r === selectedR)?.hexColor ??
+          this.colorAtOpen;
+        const normalizedDbColor =
+          toPickerHexColor(dbColor) ?? this.colorAtOpen.toLowerCase();
+
+        if (!this.selectedHex) {
+          return;
+        }
+
+        this.selectedHex.fill = normalizedDbColor;
+        this.selectedColor = normalizedDbColor;
+        this.lastLiveColor = normalizedDbColor;
+        this.colorAtOpen = normalizedDbColor;
+      },
+      error: (err) => {
+        console.error('Failed to restore color from DB:', err);
+        if (!this.selectedHex) {
+          return;
+        }
+
+        this.selectedHex.fill = this.colorAtOpen;
+        this.selectedColor = this.colorAtOpen;
+        this.lastLiveColor = this.colorAtOpen;
       },
     });
   }
