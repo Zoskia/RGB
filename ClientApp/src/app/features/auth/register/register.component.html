@@ -38,3 +38,23 @@
     </div>
   </div>
 </div>
+
+<!-- Registration result modal shown after submit response. -->
+<div *ngIf="showResultModal" class="result-modal-backdrop">
+  <div
+    class="auth-card result-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="register-result-title"
+  >
+    <div class="card-header text-center">
+      <h3 id="register-result-title" class="card-title">{{ modalTitle }}</h3>
+    </div>
+    <div class="card-body text-center">
+      <p class="modal-message">{{ modalMessage }}</p>
+      <button type="button" class="btn btn-auth w-100" (click)="onModalOk()">
+        OK
+      </button>
+    </div>
+  </div>
+</div>

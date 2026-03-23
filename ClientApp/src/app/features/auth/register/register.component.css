@@ -1,0 +1,28 @@
+/* Centers the modal above the current page content. */
+.result-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  padding: 1rem;
+}
+
+/* Keeps modal dimensions aligned with existing auth card design. */
+.result-modal {
+  width: 100%;
+  max-width: 380px;
+}
+
+/* Uses the same subtle typography language as the auth screens. */
+.modal-message {
+  color: #555;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.card-title {
+  color: #e6a57a;
+}
