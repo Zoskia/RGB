@@ -47,11 +47,7 @@ export class LoginComponent {
     this.loginService.loginUser(loginUser).subscribe({
       next: (response: LoginResponseDto) => {
         console.log('Login successful:', response);
-
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('username', response.username);
-        localStorage.setItem('team', response.team.toString());
-        localStorage.setItem('isAdmin', response.isAdmin.toString());
+        this.loginService.storeSession(response);
 
         this.router.navigate(['/hex-grid', response.team]);
       },

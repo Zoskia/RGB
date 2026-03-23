@@ -59,6 +59,31 @@
   color: #ffffff;
 }
 
+.team-nav__logout {
+  min-width: 5.2rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid #c7c8cb;
+  background: #ededee;
+  color: #4f555c;
+  text-align: center;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.team-nav__logout:hover {
+  border-color: #b7b9be;
+  background: #e3e4e6;
+  color: #3f444a;
+}
+
 .team-nav__link--red.is-active {
   border-color: #c36a70;
   background: #df7b82;
@@ -198,6 +223,12 @@
     flex: 1;
     min-width: auto;
     font-size: 1.1rem;
+  }
+
+  .team-nav__logout {
+    min-width: auto;
+    padding-inline: 0.8rem;
+    font-size: 0.86rem;
   }
 
   .grid-shell {

@@ -5,7 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { defineHex, Grid, rectangle } from 'honeycomb-grid';
 import { HexGridService } from './hex-grid.service';
 import { CellModel } from '../../models/cell.model';
-import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
+import {
+  ActivatedRoute,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+} from '@angular/router';
 import {
   isCorrectColorSpectrum,
   isValidHexColor,
@@ -14,6 +19,7 @@ import {
 import { TeamColor } from '../../enums/team-color.enum';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UpdateColorDto } from '../../dtos/update-color.dto';
+import { LoginService } from '../auth/login/login.service';
 
 // View model used by the template to render a single polygon cell.
 type RenderHex = {
@@ -65,7 +71,9 @@ export class HexGridComponent {
    */
   constructor(
     private hexGridService: HexGridService,
+    private loginService: LoginService,
     private route: ActivatedRoute,
+    private router: Router,
     private destroyRef: DestroyRef,
   ) {
     const Hex = defineHex({ dimensions: 50, origin: 'topLeft' });
@@ -101,7 +109,7 @@ export class HexGridComponent {
   }
 
   /**
-   * Loads persisted cell colors for the team from the route param.
+   * Loads cell colors for the team selected in the route param.
    */
   ngOnInit(): void {
     this.route.paramMap
@@ -115,11 +123,15 @@ export class HexGridComponent {
           return;
         }
 
-        localStorage.setItem('team', String(team));
         this.currentTeam = team;
         this.closeOverlay();
         this.loadGrid(team);
       });
+  }
+
+  onLogout(): void {
+    this.loginService.logout();
+    this.router.navigate(['/login']);
   }
 
   /**

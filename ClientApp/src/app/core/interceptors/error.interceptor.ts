@@ -10,6 +10,9 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error) => {
       if (error.status === 401) {
         localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        localStorage.removeItem('team');
+        localStorage.removeItem('isAdmin');
         router.navigate(['/login']);
       }
       return throwError(() => error);
