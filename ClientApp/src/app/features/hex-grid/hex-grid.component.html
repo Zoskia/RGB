@@ -34,6 +34,7 @@
               [attr.points]="getPolygonPoints(hex)"
               [attr.fill]="hex.fill"
               class="hex-polygon"
+              [class.hex-polygon--read-only]="!canEditCurrentTeam"
               (click)="onHexClick(hex, $event)"
             />
           </g>

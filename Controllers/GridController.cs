@@ -38,6 +38,25 @@ namespace RedGreenBlue.Controllers
         [HttpPut("cell")]
         public async Task<IActionResult> UpdateCellColorAsync([FromBody] UpdateCellColorDto cell)
         {
+            if (!Enum.IsDefined(typeof(TeamColor), cell.TeamColor))
+            {
+                return BadRequest("Invalid team color");
+            }
+
+            var isAdmin = User.IsInRole("Admin");
+            if (!isAdmin)
+            {
+                if (!TryGetUserTeam(out var userTeam))
+                {
+                    return StatusCode(StatusCodes.Status403Forbidden, "User team claim is missing or invalid.");
+                }
+
+                if (cell.TeamColor != userTeam)
+                {
+                    return StatusCode(StatusCodes.Status403Forbidden, "You can only update cells for your own team.");
+                }
+            }
+
             try
             {
                 var updated = await _gridService.UpdateCellColorAsync(cell);
@@ -49,6 +68,33 @@ namespace RedGreenBlue.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        private bool TryGetUserTeam(out TeamColor userTeam)
+        {
+            userTeam = default;
+            var teamClaim = User.FindFirst("team")?.Value;
+
+            if (string.IsNullOrWhiteSpace(teamClaim))
+            {
+                return false;
+            }
+
+            if (Enum.TryParse<TeamColor>(teamClaim, ignoreCase: true, out var parsedTeam)
+                && Enum.IsDefined(typeof(TeamColor), parsedTeam))
+            {
+                userTeam = parsedTeam;
+                return true;
+            }
+
+            if (int.TryParse(teamClaim, out var numericTeam)
+                && Enum.IsDefined(typeof(TeamColor), numericTeam))
+            {
+                userTeam = (TeamColor)numericTeam;
+                return true;
+            }
+
+            return false;
         }
 
 

@@ -143,6 +143,10 @@
   stroke-width: 1px;
 }
 
+.hex-polygon--read-only {
+  pointer-events: none;
+}
+
 .color-overlay {
   position: absolute;
   top: 50%;

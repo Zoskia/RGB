@@ -59,6 +59,9 @@ export class HexGridComponent {
   selectedHex: RenderHex | null = null;
   overlayOpen = false;
   selectedColor = '#cccccc';
+  userTeam: TeamColor | null = null;
+  isAdmin = false;
+  canEditCurrentTeam = false;
   currentTeam: TeamColor | null = null;
   spectrumErrorOpen = false;
 
@@ -106,6 +109,9 @@ export class HexGridComponent {
     const viewCenterY = 600 / 2;
     this.offsetX = viewCenterX - gridCenterX;
     this.offsetY = viewCenterY - gridCenterY;
+
+    this.userTeam = this.loginService.getUserTeam();
+    this.isAdmin = this.loginService.isAdmin();
   }
 
   /**
@@ -124,6 +130,7 @@ export class HexGridComponent {
         }
 
         this.currentTeam = team;
+        this.canEditCurrentTeam = this.canEditTeam(team);
         this.closeOverlay();
         this.loadGrid(team);
       });
@@ -216,6 +223,7 @@ export class HexGridComponent {
    * Opens the color overlay for the clicked hex cell.
    */
   onHexClick(hex: RenderHex, event: MouseEvent): void {
+    if (!this.canEditCurrentTeam) return;
     if (this.hasDragged) return;
     event.stopPropagation();
 
@@ -240,6 +248,11 @@ export class HexGridComponent {
    * Applies color changes in real time while the native picker is open.
    */
   applyColorLive(color: string): void {
+    if (!this.canEditCurrentTeam) {
+      this.closeOverlay();
+      return;
+    }
+
     const normalizedColor = toPickerHexColor(color);
     if (!normalizedColor || !isValidHexColor(normalizedColor)) {
       this.closeOverlay();
@@ -295,6 +308,9 @@ export class HexGridComponent {
    */
   private persistSelectedHexColor(): boolean {
     if (!this.selectedHex || this.currentTeam === null) {
+      return true;
+    }
+    if (!this.canEditCurrentTeam) {
       return true;
     }
 
@@ -395,5 +411,10 @@ export class HexGridComponent {
     return [TeamColor.Red, TeamColor.Green, TeamColor.Blue].includes(
       team as TeamColor,
     );
+  }
+
+  private canEditTeam(team: TeamColor): boolean {
+    if (this.isAdmin) return true;
+    return this.userTeam !== null && this.userTeam === team;
   }
 }

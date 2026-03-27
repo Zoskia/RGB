@@ -4,6 +4,7 @@ import { LoginUserDto } from '../../../dtos/login-user.dto';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { LoginResponseDto } from '../../../dtos/login-response.dto';
+import { TeamColor } from '../../../enums/team-color.enum';
 
 const STORAGE_KEYS = {
   token: 'token',
@@ -34,6 +35,24 @@ export class LoginService {
 
   getToken(): string | null {
     return localStorage.getItem(STORAGE_KEYS.token);
+  }
+
+  getUserTeam(): TeamColor | null {
+    const storedTeam = localStorage.getItem(STORAGE_KEYS.team);
+    if (storedTeam === null) {
+      return null;
+    }
+
+    const parsedTeam = Number(storedTeam);
+    const isValidTeam = [TeamColor.Red, TeamColor.Green, TeamColor.Blue].includes(
+      parsedTeam as TeamColor
+    );
+
+    return isValidTeam ? (parsedTeam as TeamColor) : null;
+  }
+
+  isAdmin(): boolean {
+    return localStorage.getItem(STORAGE_KEYS.isAdmin) === 'true';
   }
 
   logout(): void {

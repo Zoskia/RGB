@@ -16,6 +16,7 @@ export class HexGridService {
   }
 
   updateCellColor(cell: UpdateColorDto): Observable<void> {
+    localStorage.getItem;
     return this.http.put<void>(`${environment.apiUrl}/grid/cell`, cell);
   }
 }
