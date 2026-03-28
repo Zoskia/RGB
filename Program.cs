@@ -83,13 +83,25 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// DB INIT (migrate + seed)
-using (var scope = app.Services.CreateScope())
+var runMigrationsAtStartup = builder.Configuration.GetValue<bool?>("Database:RunMigrationsAtStartup")
+    ?? app.Environment.IsDevelopment();
+var seedAtStartup = builder.Configuration.GetValue<bool?>("Database:SeedAtStartup")
+    ?? app.Environment.IsDevelopment();
+
+if (runMigrationsAtStartup || seedAtStartup)
 {
+    using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    // Seeding requires schema to exist.
     await db.Database.MigrateAsync();
 
-    await DbInitializer.SeedRectangleForAllTeamsAsync(db, width: 100, height: 100);
+    if (seedAtStartup)
+    {
+        var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
+        await DbInitializer.SeedDefaultUsersAsync(db, passwordHasher);
+        await DbInitializer.SeedRectangleForAllTeamsAsync(db);
+    }
 }
 
 if (app.Environment.IsDevelopment())
