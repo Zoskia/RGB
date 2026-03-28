@@ -66,7 +66,6 @@ export class LoginComponent {
 
     this.loginService.loginUser(loginUser).subscribe({
       next: (response: LoginResponseDto) => {
-        console.log('Login successful:', response);
         this.loginService.storeSession(response);
 
         this.router.navigate(['/hex-grid', response.team]);
