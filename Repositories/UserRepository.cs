@@ -29,8 +29,7 @@ public class UserRepository : IUserRepository
         }
         catch (DbUpdateException)
         {
-            // Handle registration race condition:
-            // username looked free before insert, but was created concurrently.
+            // Another request can claim the username between availability check and insert.
             _context.Entry(user).State = EntityState.Detached;
 
             var usernameExists = await _context.Users

@@ -1,4 +1,4 @@
-/* Centers the modal above the current page content. */
+/* Center the result modal above the current page content. */
 .result-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -10,13 +10,13 @@
   padding: 1rem;
 }
 
-/* Keeps modal dimensions aligned with existing auth card design. */
+/* Match modal width to the auth card for a consistent layout. */
 .result-modal {
   width: 100%;
   max-width: 380px;
 }
 
-/* Uses the same subtle typography language as the auth screens. */
+/* Keep modal copy style aligned with the auth screens. */
 .modal-message {
   color: #555;
   margin-bottom: 1rem;

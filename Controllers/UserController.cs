@@ -44,7 +44,8 @@ namespace RedGreenBlue.Controllers
                 IsAdmin = newUser.IsAdmin
             };
 
-            return StatusCode(201, response); // TODO: implement CreatedAtAction()
+            // Keep a plain 201 response until a canonical "get user by id" route exists.
+            return StatusCode(201, response);
         }
 
         [HttpPost("login")]

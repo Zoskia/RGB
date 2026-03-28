@@ -29,5 +29,6 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: '**', redirectTo: 'login' }, // fallback
+  // Catch-all route for unknown URLs.
+  { path: '**', redirectTo: 'login' },
 ];

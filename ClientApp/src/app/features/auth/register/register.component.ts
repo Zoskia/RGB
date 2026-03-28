@@ -18,13 +18,10 @@ export class RegisterComponent {
   private static readonly MAX_LENGTH = 16;
   private static readonly USERNAME_PATTERN = /^[a-zA-Z0-9._-]{5,16}$/;
   registerForm: FormGroup;
-  // Tracks whether the current modal state represents a successful registration.
+  // Modal state shown after a registration attempt.
   registrationSucceeded = false;
-  // Controls visibility of the registration result modal.
   showResultModal = false;
-  // Holds the modal title for success/error scenarios.
   modalTitle = '';
-  // Holds the modal message for success/error scenarios.
   modalMessage = '';
 
   constructor(
@@ -80,7 +77,7 @@ export class RegisterComponent {
       },
       error: (err) => {
         console.error('Registration failed:', err);
-        // Duplicate username is returned as HTTP 409 (Conflict) by the API.
+        // The API returns HTTP 409 (Conflict) when the username already exists.
         if (err?.status === 409) {
           this.openResultModal(
             false,

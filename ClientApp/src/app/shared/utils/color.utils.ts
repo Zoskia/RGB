@@ -1,6 +1,6 @@
 import { TeamColor } from '../../enums/team-color.enum';
 
-// Converts supported color formats into #rrggbb for <input type="color">.
+// Normalize supported color formats to #rrggbb for native color inputs.
 export function toPickerHexColor(
   color: string | null | undefined,
 ): string | null {
@@ -44,7 +44,7 @@ export function isValidHexColor(color: string): boolean {
   return /^#[0-9A-Fa-f]{6}$/.test(color);
 }
 
-// Validating correct color spectrum for current grid
+// Enforce team color ownership by requiring one dominant RGB channel.
 
 export function isCorrectColorSpectrum(
   teamColor: TeamColor,

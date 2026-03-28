@@ -1,6 +1,5 @@
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -13,24 +12,23 @@ using RedGreenBlue.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Controllers + JSON (camelCase keys for JS/TS clients)
+// Configure camelCase JSON payloads for JS/TS clients.
 builder.Services.AddControllers()
     .AddJsonOptions(o =>
     {
         o.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         o.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
-        // o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 
-// EF Core (SQLite)
+// Configure EF Core with SQLite.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// DI registrations
+// Register repository and application services.
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPasswordHasher, CustomPasswordHasher>();
@@ -38,7 +36,7 @@ builder.Services.AddScoped<IGridRepository, GridRepository>();
 builder.Services.AddScoped<IGridService, GridService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 
-// JWT auth
+// Configure JWT bearer authentication.
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
 if (jwtSettings is null || string.IsNullOrWhiteSpace(jwtSettings.Key))
 {
@@ -69,7 +67,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-// CORS for Angular dev server
+// Allow requests from the Angular dev server during local development.
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp", policy =>
@@ -77,7 +75,6 @@ builder.Services.AddCors(options =>
         policy.WithOrigins("http://localhost:4200")
               .AllowAnyHeader()
               .AllowAnyMethod();
-        // .AllowCredentials();
     });
 });
 
@@ -93,7 +90,7 @@ if (runMigrationsAtStartup || seedAtStartup)
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-    // Seeding requires schema to exist.
+    // Run migrations first so optional seed data can target existing tables.
     await db.Database.MigrateAsync();
 
     if (seedAtStartup)
