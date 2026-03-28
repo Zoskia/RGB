@@ -19,6 +19,16 @@ The frontend features a color-selectable **hexagon grid** built with https://abb
 - **Honeycomb Grid** – Hexagon rendering
 - **SQLite** - Simple SQL DB
 
+## Local JWT Secret Setup
+
+JWT signing key is not stored in `appsettings.json`.
+Set it once locally via .NET User Secrets:
+
+```bash
+dotnet user-secrets init
+dotnet user-secrets set "Jwt:Key" "dev-jwt-key-please-change-later-2026"
+```
+
 ---
 
 > This is an experimental project for learning and demonstration purposes.

@@ -40,6 +40,11 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 
 // JWT auth
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
+if (jwtSettings is null || string.IsNullOrWhiteSpace(jwtSettings.Key))
+{
+    throw new InvalidOperationException(
+        "JWT key is missing. Set Jwt:Key via dotnet user-secrets or environment variable Jwt__Key.");
+}
 var key = Encoding.UTF8.GetBytes(jwtSettings.Key);
 
 builder.Services.AddAuthentication(options =>
