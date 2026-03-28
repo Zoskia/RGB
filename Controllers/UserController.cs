@@ -22,11 +22,14 @@ namespace RedGreenBlue.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserResponseDto>> Register(RegisterUserDto dto)
         {
+            if (!dto.Team.HasValue || !Enum.IsDefined(typeof(TeamColor), dto.Team.Value))
+                return BadRequest("Team is required and must be a valid value.");
+
             var user = new User
             {
                 Username = dto.Username,
                 Password = dto.Password,
-                Team = dto.Team
+                Team = dto.Team.Value
             };
 
             var newUser = await _authService.RegisterAsync(user);

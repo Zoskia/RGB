@@ -14,8 +14,8 @@ namespace RedGreenBlue.Dtos.User
         [StringLength(16, MinimumLength = 5)]
         public string Password { get; set; } = null!;
 
-        [Required]
-        [EnumDataType(typeof(TeamColor))]
-        public TeamColor Team { get; set; }
+        [Required(ErrorMessage = "Team is required.")]
+        [EnumDataType(typeof(TeamColor), ErrorMessage = "Invalid team color.")]
+        public TeamColor? Team { get; set; }
     }
 }
