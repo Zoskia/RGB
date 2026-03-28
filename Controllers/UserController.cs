@@ -31,7 +31,7 @@ namespace RedGreenBlue.Controllers
 
             var newUser = await _authService.RegisterAsync(user);
             if (newUser == null)
-                return BadRequest("Username already exists");
+                return Conflict("Username already exists");
 
             var response = new UserResponseDto
             {

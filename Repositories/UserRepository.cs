@@ -15,13 +15,34 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> AddNewUserAsync(User user)
     {
-        if (await UsernameAvailableAsync(user.Username))
+        if (!await UsernameAvailableAsync(user.Username))
         {
-            await _context.Users.AddAsync(user);
+            return null;
+        }
+
+        await _context.Users.AddAsync(user);
+
+        try
+        {
             await _context.SaveChangesAsync();
             return user;
         }
-        return null;
+        catch (DbUpdateException)
+        {
+            // Handle registration race condition:
+            // username looked free before insert, but was created concurrently.
+            _context.Entry(user).State = EntityState.Detached;
+
+            var usernameExists = await _context.Users
+                .AnyAsync(u => u.Username == user.Username);
+
+            if (usernameExists)
+            {
+                return null;
+            }
+
+            throw;
+        }
     }
 
     public async Task<User?> GetByUsernameAsync(string username)
