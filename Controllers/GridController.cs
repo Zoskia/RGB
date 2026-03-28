@@ -68,6 +68,10 @@ namespace RedGreenBlue.Controllers
             {
                 return BadRequest(ex.Message);
             }
+            catch (Exception ex) when (ex is FormatException or ArgumentOutOfRangeException)
+            {
+                return BadRequest("Invalid HEX color format.");
+            }
         }
 
         private bool TryGetUserTeam(out TeamColor userTeam)

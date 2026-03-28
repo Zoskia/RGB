@@ -11,7 +11,7 @@ public class Cell
     public int R { get; set; }
 
     [Required]
-    [RegularExpression("^#(?:[0-9a-fA-F]{3}){1,2}$", ErrorMessage = "Invalid HEX color")]
+    [RegularExpression("^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$", ErrorMessage = "Invalid HEX color")]
     public string HexColor { get; set; } = "#CCCCCC";
 
     [Required]
