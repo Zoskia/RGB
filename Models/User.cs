@@ -10,7 +10,8 @@ public class User
     public int Id { get; set; }
 
     [Required]
-    [StringLength(50)]
+    [StringLength(16, MinimumLength = 5)]
+    [RegularExpression("^[a-zA-Z0-9._-]{5,16}$")]
     public string Username { get; set; } = null!;
 
     [Required]

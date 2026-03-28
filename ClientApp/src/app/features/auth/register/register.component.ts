@@ -14,6 +14,9 @@ import { RegisterUserDto } from '../../../dtos/register-user.dto';
   styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent {
+  private static readonly MIN_LENGTH = 5;
+  private static readonly MAX_LENGTH = 16;
+  private static readonly USERNAME_PATTERN = /^[a-zA-Z0-9._-]{5,16}$/;
   registerForm: FormGroup;
   // Tracks whether the current modal state represents a successful registration.
   registrationSucceeded = false;
@@ -27,11 +30,26 @@ export class RegisterComponent {
   constructor(
     private fb: FormBuilder,
     private registerService: RegisterService,
-    private router: Router
+    private router: Router,
   ) {
     this.registerForm = this.fb.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required],
+      username: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(RegisterComponent.MIN_LENGTH),
+          Validators.maxLength(RegisterComponent.MAX_LENGTH),
+          Validators.pattern(RegisterComponent.USERNAME_PATTERN),
+        ],
+      ],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(RegisterComponent.MIN_LENGTH),
+          Validators.maxLength(RegisterComponent.MAX_LENGTH),
+        ],
+      ],
       team: ['0', Validators.required],
     });
   }
@@ -39,6 +57,7 @@ export class RegisterComponent {
   onSubmit(): void {
     if (this.registerForm.invalid) {
       console.log('invalid form');
+      this.registerForm.markAllAsTouched();
       return;
     }
 
@@ -56,7 +75,7 @@ export class RegisterComponent {
         this.openResultModal(
           true,
           'Registration successful',
-          'Your account has been created successfully.'
+          'Your account has been created successfully.',
         );
       },
       error: (err) => {
@@ -66,7 +85,7 @@ export class RegisterComponent {
           this.openResultModal(
             false,
             'Registration failed',
-            'User is already registered.'
+            'User is already registered.',
           );
         }
       },
@@ -77,7 +96,7 @@ export class RegisterComponent {
   private openResultModal(
     succeeded: boolean,
     title: string,
-    message: string
+    message: string,
   ): void {
     this.registrationSucceeded = succeeded;
     this.modalTitle = title;

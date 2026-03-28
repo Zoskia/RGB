@@ -20,22 +20,42 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
+  private static readonly MIN_LENGTH = 5;
+  private static readonly MAX_LENGTH = 16;
+  private static readonly USERNAME_PATTERN = /^[a-zA-Z0-9._-]{5,16}$/;
   loginForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     private loginService: LoginService,
-    private router: Router
+    private router: Router,
   ) {
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required],
+      username: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(LoginComponent.MIN_LENGTH),
+          Validators.maxLength(LoginComponent.MAX_LENGTH),
+          Validators.pattern(LoginComponent.USERNAME_PATTERN),
+        ],
+      ],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(LoginComponent.MIN_LENGTH),
+          Validators.maxLength(LoginComponent.MAX_LENGTH),
+        ],
+      ],
     });
   }
 
   onSubmit(): void {
-    if (!this.loginForm.valid) {
+    if (this.loginForm.invalid) {
       console.log('Form data invalid!');
+      this.loginForm.markAllAsTouched();
+      return;
     }
 
     const formData = this.loginForm.value;
