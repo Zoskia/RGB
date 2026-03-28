@@ -80,8 +80,8 @@ export class RegisterComponent {
       },
       error: (err) => {
         console.error('Registration failed:', err);
-        // The backend currently exposes only one expected registration error.
-        if (err?.status === 400) {
+        // Duplicate username is returned as HTTP 409 (Conflict) by the API.
+        if (err?.status === 409) {
           this.openResultModal(
             false,
             'Registration failed',
